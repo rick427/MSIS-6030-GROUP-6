@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.border.MatteBorder;
 
 public class CheckLibrary extends JFrame implements ActionListener {
     JButton checkTrackButton, listAllTracksButton;
@@ -39,6 +40,7 @@ public class CheckLibrary extends JFrame implements ActionListener {
         label.setFont(new Font("Consolas", Font.BOLD, 13));
 
         JTextField textField = new JTextField();
+        textField.setFocusable(true);
         textField.setPreferredSize(new Dimension(45, 30));
 
         checkTrackButton = new JButton("Check Track");
@@ -57,17 +59,30 @@ public class CheckLibrary extends JFrame implements ActionListener {
         this.add(actionsGroup, BorderLayout.NORTH);
 
         //******: TRACKS LIST ******
-        JPanel tracksListPanel = new JPanel();
-        tracksListPanel.setLayout(new BorderLayout());
-        tracksListPanel.setPreferredSize(new Dimension(300, 200));
+        JTextArea textArea = getTextArea();
 
-        JTextArea tracksList = new JTextArea();
-        tracksList.setSize(200, 200);
-        tracksList.setBackground(Color.red);
+        JScrollPane scrollableTextArea = new JScrollPane(textArea);
+        scrollableTextArea.setBorder(new MatteBorder(1, 0, 0, 0, Color.lightGray));
+        scrollableTextArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        tracksListPanel.add(tracksList);
-        tracksListPanel.setBackground(Color.lightGray);
-        this.add(tracksListPanel);
+        this.add(scrollableTextArea);
+    }
+
+    private static JTextArea getTextArea (){
+        JTextArea textArea = new JTextArea(20, 20);
+
+        textArea.setEnabled(false);
+        textArea.setFont(new Font("Consolas", Font.PLAIN, 13));
+        textArea.setWrapStyleWord(true);
+        textArea.setMargin(new Insets(10, 10, 10, 10));
+
+        textArea.append("01 How much is that doggy in the window - Zee-J \n");
+        textArea.append("02 Exotic - Maradonna \n");
+        textArea.append("03 I'm dreaming of a white Christmas - Ludwig van Beethoven \n");
+        textArea.append("04 Pastoral Symphony - Cayley Minnow \n");
+        textArea.append("05 Anarchy in the UK - The Kings Singers \n");
+
+        return textArea;
     }
 
     @Override
