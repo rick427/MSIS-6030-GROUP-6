@@ -29,7 +29,7 @@ public class Jukebox extends JFrame implements ActionListener {
         //@: Adjust frame from being resized
         this.setResizable(false);
 
-        //@: Dismiss frame from the program i.e exit application
+        //@: Dismiss frame from the program i.e. exit application
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         //@: Create and set a new image icon for the frame

@@ -4,7 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.border.MatteBorder;
+
+//@: Utils
+import utils.LibraryData;
 
 public class CheckLibrary extends JFrame implements ActionListener {
     JTextField trackNumField;
@@ -13,7 +18,7 @@ public class CheckLibrary extends JFrame implements ActionListener {
     public CheckLibrary(){
         //******: INITIAL FRAME SETUP ******
         this.setVisible(true);
-        this.setSize(500, 200);
+        this.setSize(500, 250);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setTitle("Check Library");
@@ -43,6 +48,16 @@ public class CheckLibrary extends JFrame implements ActionListener {
         trackNumField = new JTextField();
         trackNumField.setFocusable(true);
         trackNumField.setPreferredSize(new Dimension(45, 30));
+        //@: Make sure the track number field only accepts numbers
+        trackNumField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char currChar = e.getKeyChar();
+               if(!(Character.isDigit(currChar)) || (currChar == KeyEvent.VK_BACK_SPACE) || (currChar == KeyEvent.VK_DELETE)){
+                   e.consume();
+               }
+            }
+        });
 
         checkTrackButton = new JButton("Check Track");
         checkTrackButton.addActionListener(this);
@@ -60,7 +75,7 @@ public class CheckLibrary extends JFrame implements ActionListener {
         this.add(actionsGroup, BorderLayout.NORTH);
 
         //******: TRACKS LIST ******
-        JTextArea textArea = getTextArea();
+        JTextArea textArea = getTracksList();
 
         JScrollPane scrollableTextArea = new JScrollPane(textArea);
         scrollableTextArea.setBorder(new MatteBorder(1, 0, 0, 0, Color.lightGray));
@@ -69,20 +84,17 @@ public class CheckLibrary extends JFrame implements ActionListener {
         this.add(scrollableTextArea);
     }
 
-    //@: Create tracks list
-    private static JTextArea getTextArea (){
+    //@: Create track list
+    private static JTextArea getTracksList (){
         JTextArea textArea = new JTextArea(20, 20);
+        String tracks = LibraryData.listAll();
 
         textArea.setEnabled(false);
         textArea.setFont(new Font("Consolas", Font.PLAIN, 13));
         textArea.setWrapStyleWord(true);
         textArea.setMargin(new Insets(10, 10, 10, 10));
 
-        textArea.append("01 How much is that doggy in the window - Zee-J \n");
-        textArea.append("02 Exotic - Mara donna \n");
-        textArea.append("03 I'm dreaming of a white Christmas - Ludwig van Beethoven \n");
-        textArea.append("04 Pastoral Symphony - Cayley Minnow \n");
-        textArea.append("05 Anarchy in the UK - The Kings Singers \n");
+        textArea.append(tracks);
 
         return textArea;
     }
