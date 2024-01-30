@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.border.MatteBorder;
 
 public class CheckLibrary extends JFrame implements ActionListener {
+    JTextField trackNumField;
     JButton checkTrackButton, listAllTracksButton;
 
     public CheckLibrary(){
@@ -39,9 +40,9 @@ public class CheckLibrary extends JFrame implements ActionListener {
         JLabel label = new JLabel("Enter Track Number:");
         label.setFont(new Font("Consolas", Font.BOLD, 13));
 
-        JTextField textField = new JTextField();
-        textField.setFocusable(true);
-        textField.setPreferredSize(new Dimension(45, 30));
+        trackNumField = new JTextField();
+        trackNumField.setFocusable(true);
+        trackNumField.setPreferredSize(new Dimension(45, 30));
 
         checkTrackButton = new JButton("Check Track");
         checkTrackButton.addActionListener(this);
@@ -52,7 +53,7 @@ public class CheckLibrary extends JFrame implements ActionListener {
         listAllTracksButton.setFocusable(false);
 
         actionsRow.add(label);
-        actionsRow.add(textField);
+        actionsRow.add(trackNumField);
         actionsRow.add(checkTrackButton);
         actionsRow.add(listAllTracksButton);
         actionsGroup.add(actionsRow);
@@ -68,6 +69,7 @@ public class CheckLibrary extends JFrame implements ActionListener {
         this.add(scrollableTextArea);
     }
 
+    //@: Create tracks list
     private static JTextArea getTextArea (){
         JTextArea textArea = new JTextArea(20, 20);
 
@@ -87,9 +89,14 @@ public class CheckLibrary extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        boolean isTrackEmptyOrBlank = trackNumField.getText().isEmpty() || trackNumField.getText().isBlank();
         if(e.getSource() == checkTrackButton){
-            //@: TODO: Implementation goes here
-            System.out.println("Check track button was clicked");
+            if(isTrackEmptyOrBlank){
+                JOptionPane.showMessageDialog(null, "A track number is required to check tracks.\nKindly provide one to perform this operation.", "Invalid Operation", JOptionPane.WARNING_MESSAGE);
+            }
+            else {
+                System.out.println("Check track button was clicked");
+            }
         }
         else if (e.getSource() == listAllTracksButton){
             //@: TODO: Implementation goes here
