@@ -50,6 +50,10 @@ public class LibraryData{
         return output;
     }
 
+    public static int getTotal(){
+        return library.size();
+    }
+
     public static String getName(String key) {
         Track item = library.get(key);
         if (item == null) {

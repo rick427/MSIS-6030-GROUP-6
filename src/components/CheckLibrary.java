@@ -105,20 +105,24 @@ public class CheckLibrary extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String trackIndex = trackNumField.getText();
         boolean isTrackEmptyOrBlank = trackIndex.isEmpty() || trackIndex.isBlank();
+
         if(e.getSource() == checkTrackButton){
             if(isTrackEmptyOrBlank){
                 JOptionPane.showMessageDialog(null, "A track number is required to check tracks.\nKindly provide one to perform this operation.", "Track Number Required", JOptionPane.WARNING_MESSAGE);
             }
+            else if(Integer.parseInt(trackIndex) > LibraryData.getTotal()){
+                JOptionPane.showMessageDialog(null, "The track number you specified does not exist.\nKindly check your input and try again", "Track Not Found", JOptionPane.ERROR_MESSAGE);
+            }
             else {
                 int sanitizedIndex = Integer.parseInt(trackIndex);
                 String searchIndex = sanitizedIndex <= 9 ? "0"+sanitizedIndex : Integer.toString(sanitizedIndex);
-                System.out.println(searchIndex);
                 String trackDetail = LibraryData.getName(searchIndex) +" by "+ LibraryData.getArtist(searchIndex) +" - "+ LibraryData.getRating(searchIndex)+" stars.";
                 trackListArea.setEnabled(true);
                 trackListArea.selectAll();
                 trackListArea.replaceSelection(trackDetail);
                 trackListArea.setEnabled(false);
             }
+            System.out.println();
         }
         else if (e.getSource() == listAllTracksButton){
             //@: Reset tracks list with the original list
