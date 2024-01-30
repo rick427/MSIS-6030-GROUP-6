@@ -43,9 +43,9 @@ public class LibraryData{
 
     public static String listAll() {
         String output = "";
-        for (String key : library.keySet()) {
+        for (String key: library.keySet()) {
             Track item = library.get(key);
-            output += key + " " + item.name + " - " + item.artist + "\n";
+            output += key + ": " + item.name + " - " + item.artist + "\n";
         }
         return output;
     }

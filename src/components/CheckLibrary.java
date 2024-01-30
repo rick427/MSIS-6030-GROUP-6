@@ -13,7 +13,9 @@ import utils.LibraryData;
 
 public class CheckLibrary extends JFrame implements ActionListener {
     JTextField trackNumField;
+    JTextArea trackListArea;
     JButton checkTrackButton, listAllTracksButton;
+    String allTracks = LibraryData.listAll();
 
     public CheckLibrary(){
         //******: INITIAL FRAME SETUP ******
@@ -75,9 +77,9 @@ public class CheckLibrary extends JFrame implements ActionListener {
         this.add(actionsGroup, BorderLayout.NORTH);
 
         //******: TRACKS LIST ******
-        JTextArea textArea = getTracksList();
+        JTextArea tracksList = getTracksList();
 
-        JScrollPane scrollableTextArea = new JScrollPane(textArea);
+        JScrollPane scrollableTextArea = new JScrollPane(tracksList);
         scrollableTextArea.setBorder(new MatteBorder(1, 0, 0, 0, Color.lightGray));
         scrollableTextArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -85,34 +87,47 @@ public class CheckLibrary extends JFrame implements ActionListener {
     }
 
     //@: Create track list
-    private static JTextArea getTracksList (){
-        JTextArea textArea = new JTextArea(20, 20);
-        String tracks = LibraryData.listAll();
+    private JTextArea getTracksList (){
+        trackListArea = new JTextArea(20, 20);
 
-        textArea.setEnabled(false);
-        textArea.setFont(new Font("Consolas", Font.PLAIN, 13));
-        textArea.setWrapStyleWord(true);
-        textArea.setMargin(new Insets(10, 10, 10, 10));
+        trackListArea.setEnabled(false);
+        trackListArea.setFont(new Font("Consolas", Font.PLAIN, 13));
+        trackListArea.setWrapStyleWord(true);
+        trackListArea.setMargin(new Insets(10, 10, 10, 10));
 
-        textArea.append(tracks);
+        trackListArea.selectAll();
+        trackListArea.replaceSelection(allTracks);
 
-        return textArea;
+        return trackListArea;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean isTrackEmptyOrBlank = trackNumField.getText().isEmpty() || trackNumField.getText().isBlank();
+        String trackIndex = trackNumField.getText();
+        boolean isTrackEmptyOrBlank = trackIndex.isEmpty() || trackIndex.isBlank();
         if(e.getSource() == checkTrackButton){
             if(isTrackEmptyOrBlank){
-                JOptionPane.showMessageDialog(null, "A track number is required to check tracks.\nKindly provide one to perform this operation.", "Invalid Operation", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "A track number is required to check tracks.\nKindly provide one to perform this operation.", "Track Number Required", JOptionPane.WARNING_MESSAGE);
             }
             else {
-                System.out.println("Check track button was clicked");
+                int sanitizedIndex = Integer.parseInt(trackIndex);
+                String searchIndex = sanitizedIndex <= 9 ? "0"+sanitizedIndex : Integer.toString(sanitizedIndex);
+                System.out.println(searchIndex);
+                String trackDetail = LibraryData.getName(searchIndex) +" by "+ LibraryData.getArtist(searchIndex) +" - "+ LibraryData.getRating(searchIndex)+" stars.";
+                trackListArea.setEnabled(true);
+                trackListArea.selectAll();
+                trackListArea.replaceSelection(trackDetail);
+                trackListArea.setEnabled(false);
             }
         }
         else if (e.getSource() == listAllTracksButton){
-            //@: TODO: Implementation goes here
-            System.out.println("List all tracks button was clicked");
+            //@: Reset tracks list with the original list
+            trackListArea.setEnabled(true);
+            trackListArea.selectAll();
+            trackListArea.replaceSelection(allTracks);
+            trackListArea.setEnabled(false);
+            //@: Reset track number field
+            trackNumField.setText("");
         }
     }
 }
