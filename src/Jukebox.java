@@ -33,7 +33,7 @@ public class Jukebox extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         //@: Create and set a new image icon for the frame
-        ImageIcon frameIcon = new ImageIcon("");
+        ImageIcon frameIcon = new ImageIcon("logo.jpeg");
         this.setIconImage(frameIcon.getImage());
 
         //@: Change frame's background color

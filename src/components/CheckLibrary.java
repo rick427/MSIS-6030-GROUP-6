@@ -20,7 +20,7 @@ public class CheckLibrary extends JFrame implements ActionListener {
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        ImageIcon frameIcon = new ImageIcon("");
+        ImageIcon frameIcon = new ImageIcon("logo.jpeg");
         this.setIconImage(frameIcon.getImage());
 
         this.getContentPane().setBackground(new Color(255, 255,255, 255));
@@ -79,7 +79,7 @@ public class CheckLibrary extends JFrame implements ActionListener {
         textArea.setMargin(new Insets(10, 10, 10, 10));
 
         textArea.append("01 How much is that doggy in the window - Zee-J \n");
-        textArea.append("02 Exotic - Maradonna \n");
+        textArea.append("02 Exotic - Mara donna \n");
         textArea.append("03 I'm dreaming of a white Christmas - Ludwig van Beethoven \n");
         textArea.append("04 Pastoral Symphony - Cayley Minnow \n");
         textArea.append("05 Anarchy in the UK - The Kings Singers \n");
