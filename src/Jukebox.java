@@ -10,7 +10,7 @@ public class Jukebox extends JFrame implements ActionListener {
     JButton checkLibButton, updateLibButton, createPlaylistButton, exitButton;
 
     Jukebox(){
-        //******: INITIAL FRAME SETUP ******
+        //******: INITIAL SETUP ******
         //@: Make the frame visible
         this.setVisible(true);
 
@@ -18,7 +18,10 @@ public class Jukebox extends JFrame implements ActionListener {
         this.setLayout(new BorderLayout());
 
         //@: Adjust size of the frame on both x and y dimensions
-        this.setSize(500, 130);
+        this.setSize(500, 150);
+
+        //@: Define relative layout
+        this.setLocationRelativeTo(null);
 
         //@: Add a title to the frame
         this.setTitle("Jukebox");
@@ -36,11 +39,12 @@ public class Jukebox extends JFrame implements ActionListener {
         //@: Change frame's background color
         this.getContentPane().setBackground(new Color(255, 255,255, 255));
 
-        //******: DESCRIPTION MARKUP ******
+        //******: DESCRIPTION LAYOUT ******
         //@: Create a new panel for the description
         JPanel descriptionPanel = new JPanel();
         descriptionPanel.setLayout(new BorderLayout());
         descriptionPanel.setPreferredSize(new Dimension(100, 60));
+        descriptionPanel.setBackground(new Color(255, 255,255, 255));
 
         //@: Add the panel to the frame
         this.add(descriptionPanel, BorderLayout.NORTH);
@@ -51,11 +55,12 @@ public class Jukebox extends JFrame implements ActionListener {
         //@: Add the label text to the panel
         descriptionPanel.add(description);
 
-        //******: BUTTONS MARKUP ******
+        //******: BUTTONS LAYOUT ******
         //@: Create a panel to hold all buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         buttonPanel.setPreferredSize(new Dimension(100, 100));
+        buttonPanel.setBackground(new Color(255, 255,255, 255));
 
         checkLibButton = new JButton("Check Library");
         checkLibButton.addActionListener(this);
@@ -99,7 +104,6 @@ public class Jukebox extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == checkLibButton){
-            //@: TODO: Implementation goes here
             new CheckLibrary();
         }
         else if (e.getSource() == updateLibButton){

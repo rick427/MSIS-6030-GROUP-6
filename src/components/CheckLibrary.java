@@ -12,6 +12,7 @@ public class CheckLibrary extends JFrame implements ActionListener {
         //******: INITIAL FRAME SETUP ******
         this.setVisible(true);
         this.setSize(500, 200);
+        this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setTitle("Check Library");
         this.setLayout(new BorderLayout());
@@ -31,6 +32,7 @@ public class CheckLibrary extends JFrame implements ActionListener {
         //@: Create a flow layout panel to contain other components
         JPanel actionsRow = new JPanel();
         actionsRow.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        actionsRow.setBackground(new Color(255, 255,255, 255));
 
         //@: Create components
         JLabel label = new JLabel("Enter Track Number:");
