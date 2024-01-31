@@ -1,8 +1,9 @@
 package utils;
-
 import java.util.*;
 
 public class LibraryData{
+
+    static ArrayList<Track> playlist = new ArrayList<>();
     private static class Track {
         private final String name;
         private final String artist;
@@ -15,6 +16,7 @@ public class LibraryData{
             this.rating = trackRating;
         }
     }
+
 
     private static final Map<String, Track> library = new TreeMap<>();
 
@@ -40,6 +42,7 @@ public class LibraryData{
         library.put("19", new Track("Oh My", "Fireboy DML", 5));
         library.put("20", new Track("Arizona", "Lojay, Olamide", 1));
     }
+
 
     public static String listAll() {
         String output = "";
@@ -102,5 +105,81 @@ public class LibraryData{
         if (item != null) {
             item.playCount += 1;
         }
+    }
+
+    public static boolean addTrack(String key){
+
+        //Get specific track that is being added into the playlist
+        Track item = library.get(key);
+
+        //Return false if the track does not exist
+        if(item == null){
+            return false;
+        }
+
+        else{
+            //Check if playlist is empty
+            if(!playlist.isEmpty()){
+                //Check if playlist contains the track that we are trying to add
+                if(playlist.contains(item)){
+                    return false;
+                }
+                //If it does not contain the track, add the track to the playlist
+                else{
+                    playlist.add(item);
+                    return true;
+                }
+            }
+            //If the playlist was empty add the track into the playlist as the first item
+            else{
+                playlist.add(item);
+            }
+            return true;
+        }
+    }
+
+    public static String listPlaylist(){
+        String list = "";
+        //Check if playlist is empty
+        if(!playlist.isEmpty()){
+            for (Track track : playlist) {
+                list += track.name + " by: " + track.artist + " \n";
+            }
+//            System.out.println(list);
+            return list;
+        }
+        else{
+            return list;
+        }
+    }
+
+    public static String playPlaylist(){
+        String result = "";
+        // Get each individual key from the library data set
+        if(!playlist.isEmpty()){
+            for (String keys: library.keySet()){
+                // Get every track based on the keys
+                Track item = library.get(keys);
+                //Get every track in the playlist
+                for (Track play: playlist){
+                    //Compare if the track stored matches the current track in the playlist
+                    if(play.name.equals(item.name)){
+                        //Increment that current tracks playCount if it matches
+                        incrementPlayCount(keys);
+                        result += "Song: " + item.name + " was played: " + getPlayCount(keys) + " \n";
+                    }
+                }
+            }
+        }
+        else{
+            //Message to show users if no song is added to the playlist
+            result = "Please add songs into the playlist";
+        }
+        return result;
+    }
+
+    //Empties playlist
+    public static void resetPlaylist(){
+        playlist.clear();
     }
 }

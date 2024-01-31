@@ -1,4 +1,5 @@
 import components.CheckLibrary;
+import components.CreatePlaylist;
 
 import javax.swing.*;
 import java.awt.*;
@@ -113,6 +114,7 @@ public class Jukebox extends JFrame implements ActionListener {
         else if (e.getSource() == createPlaylistButton){
             //@: TODO: Implementation goes here
             System.out.println("Create playlist button was clicked");
+            new CreatePlaylist();
         }
     }
 }
