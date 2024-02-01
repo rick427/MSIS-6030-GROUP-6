@@ -79,28 +79,28 @@ public class CreatePlaylist extends JFrame implements ActionListener {
         this.add(actionsGroup);
 
         //******: TRACKS LIST ******
-        JTextArea tracksList = getTracksList();
-
-        JScrollPane scrollableTextArea = new JScrollPane(tracksList);
-        scrollableTextArea.setBorder(new MatteBorder(1, 0, 0, 0, Color.lightGray));
-        scrollableTextArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        this.add(scrollableTextArea);
+//        JTextArea tracksList = getTracksList();
+//
+//        JScrollPane scrollableTextArea = new JScrollPane(tracksList);
+//        scrollableTextArea.setBorder(new MatteBorder(1, 0, 0, 0, Color.lightGray));
+//        scrollableTextArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//
+//        this.add(scrollableTextArea);
     }
 
-    private JTextArea getTracksList (){
-        trackListArea = new JTextArea();
-
-        trackListArea.setEnabled(false);
-        trackListArea.setFont(new Font("Consolas", Font.PLAIN, 13));
-        trackListArea.setWrapStyleWord(true);
-        trackListArea.setMargin(new Insets(10, 10, 10, 10));
-
-        trackListArea.selectAll();
-        trackListArea.replaceSelection(allTracks);
-
-        return trackListArea;
-    }
+//    private JTextArea getTracksList (){
+//        trackListArea = new JTextArea();
+//
+//        trackListArea.setEnabled(false);
+//        trackListArea.setFont(new Font("Consolas", Font.PLAIN, 13));
+//        trackListArea.setWrapStyleWord(true);
+//        trackListArea.setMargin(new Insets(10, 10, 10, 10));
+//
+//        trackListArea.selectAll();
+//        trackListArea.replaceSelection(allTracks);
+//
+//        return trackListArea;
+//    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -130,9 +130,7 @@ public class CreatePlaylist extends JFrame implements ActionListener {
         }
 
         else if (e.getSource() == resetPlaylist) {
-//            System.out.println("Reset playlist button was clicked");
-//            LibraryData.listPlaylist();
-            LibraryData.playPlaylist();
+            LibraryData.resetPlaylist();
         }
 
     }

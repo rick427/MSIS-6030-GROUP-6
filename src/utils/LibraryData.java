@@ -61,7 +61,8 @@ public class LibraryData{
         Track item = library.get(key);
         if (item == null) {
             return null; // null means no such item
-        } else {
+        }
+        else {
             return item.name;
         }
     }
