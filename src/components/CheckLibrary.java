@@ -6,16 +6,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 import javax.swing.border.MatteBorder;
 
 //@: Utils
 import utils.LibraryData;
+import utils.DbConnection;
 
 public class CheckLibrary extends JFrame implements ActionListener {
     JTextField trackNumField;
     JTextArea trackListArea;
     JButton checkTrackButton, listAllTracksButton;
-    String allTracks = LibraryData.listAll();
+    String allTracks = DbConnection.listAll();
+//    String allTracks = LibraryData.listAll();
 
     public CheckLibrary(){
         //******: INITIAL FRAME SETUP ******
@@ -110,17 +113,25 @@ public class CheckLibrary extends JFrame implements ActionListener {
             if(isTrackEmptyOrBlank){
                 JOptionPane.showMessageDialog(null, "A track number is required to check tracks.\nKindly provide one to perform this operation.", "Track Number Required", JOptionPane.WARNING_MESSAGE);
             }
-            else if(Integer.parseInt(trackIndex) > LibraryData.getTotal()){
-                JOptionPane.showMessageDialog(null, "The track number you specified does not exist.\nKindly check your input and try again", "Track Not Found", JOptionPane.ERROR_MESSAGE);
-            }
             else {
-                int sanitizedIndex = Integer.parseInt(trackIndex);
-                String searchIndex = sanitizedIndex <= 9 ? "0"+sanitizedIndex : Integer.toString(sanitizedIndex);
-                String trackDetail = LibraryData.getName(searchIndex) +" by "+ LibraryData.getArtist(searchIndex) +" - "+ LibraryData.getRating(searchIndex)+" stars.";
-                trackListArea.setEnabled(true);
-                trackListArea.selectAll();
-                trackListArea.replaceSelection(trackDetail);
-                trackListArea.setEnabled(false);
+                try {
+                    if(Integer.parseInt(trackIndex) > DbConnection.getTotal()){
+        //            else if(Integer.parseInt(trackIndex) > LibraryData.getTotal()){
+                        JOptionPane.showMessageDialog(null, "The track number you specified does not exist.\nKindly check your input and try again", "Track Not Found", JOptionPane.ERROR_MESSAGE);
+                    }
+                    else {
+                        int sanitizedIndex = Integer.parseInt(trackIndex);
+                        String searchIndex = sanitizedIndex <= 9 ? "0"+sanitizedIndex : Integer.toString(sanitizedIndex);
+                        String trackDetail = DbConnection.getName(searchIndex) +" by "+ DbConnection.getArtist(searchIndex) +" - "+ DbConnection.getRating(searchIndex)+" stars.";
+//                        String trackDetail = LibraryData.getName(searchIndex) +" by "+ LibraryData.getArtist(searchIndex) +" - "+ LibraryData.getRating(searchIndex)+" stars.";
+                        trackListArea.setEnabled(true);
+                        trackListArea.selectAll();
+                        trackListArea.replaceSelection(trackDetail);
+                        trackListArea.setEnabled(false);
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
             System.out.println();
         }
