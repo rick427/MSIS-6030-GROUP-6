@@ -186,9 +186,9 @@ public class Playlist implements ActionListener {
             frame.dispose();
             new Jukebox();
         }
-        else if(e.getSource() == playlistButton){
+        else if(e.getSource() == checkLibButton){
             frame.dispose();
-            new Playlist();
+            new Library();
         }
         else if(e.getSource() == logoutButton){
             frame.dispose();

@@ -1,17 +1,22 @@
 package components;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Flow;
 
 public class Library implements ActionListener {
     JFrame frame;
-    JButton homeButton, checkLibButton, playlistButton, logoutButton;
+    JButton homeButton, checkLibButton, playlistButton, logoutButton, checkTrackButton, listAllTrackButton;
     JPanel mainListItem;
     String primary_dark = "#141414";
+    String textField_border_color = "#ced4da";
     Font font_bold, font_medium, font_light, font_regular;
 
     Library() {
@@ -130,22 +135,65 @@ public class Library implements ActionListener {
         //@: Main Content Area Section
         JPanel mainContentArea = new JPanel(new BorderLayout(0, 20));
 
-        JPanel mainHeader = new JPanel(new BorderLayout(0, 3));
-        JLabel mainHeaderTitle = new JLabel("My Library.");
-        JLabel mainHeaderSubtitle = new JLabel("Explore your library for a more personalized experience.");
+        JPanel mainHeader = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JTextField trackTextField = new JTextField("Enter Track Number");
+        checkTrackButton = new JButton("Check Track");
+        listAllTrackButton = new JButton("List All Tracks");
+
+        trackTextField.setPreferredSize(new Dimension(430, 40));
+        trackTextField.setFont(font_regular.deriveFont(15f));
+        trackTextField.setForeground(Color.decode(primary_dark));
+        trackTextField.setBackground(Color.white);
+        trackTextField.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.decode(textField_border_color)),
+                        BorderFactory.createEmptyBorder(5, 10, 5, 10)
+                )
+        );
+        trackTextField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if(trackTextField.getText().equals("Enter Track Number")){
+                    trackTextField.setText("");
+                    trackTextField.setForeground(Color.decode(primary_dark));
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(trackTextField.getText().isEmpty()){
+                    trackTextField.setForeground(Color.lightGray);
+                    trackTextField.setText("Enter Track Number");
+                }
+            }
+        });
+
+        checkTrackButton.setFocusable(false);
+        checkTrackButton.setOpaque(true);
+        checkTrackButton.setBorderPainted(false);
+        checkTrackButton.setForeground(Color.white);
+        checkTrackButton.setPreferredSize(new Dimension(150, 40));
+        checkTrackButton.setBackground(Color.decode(primary_dark));
+        checkTrackButton.setFont(font_medium.deriveFont(14f));
+        checkTrackButton.addActionListener(this);
+
+        listAllTrackButton.setFocusable(false);
+        listAllTrackButton.setOpaque(true);
+        listAllTrackButton.setBorderPainted(false);
+        listAllTrackButton.setForeground(Color.white);
+        listAllTrackButton.setPreferredSize(new Dimension(150, 40));
+        listAllTrackButton.setBackground(Color.decode(primary_dark));
+        listAllTrackButton.setFont(font_medium.deriveFont(14f));
+        listAllTrackButton.addActionListener(this);
 
         JPanel mainListArea = new JPanel(new GridLayout(0, 4, 10, 10));
-
         JScrollPane mainListScrollArea = new JScrollPane(mainListArea);
         mainListScrollArea.setBorder(null);
-        //scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        mainListScrollArea.setBackground(Color.green);
 
         mainHeader.setBackground(Color.white);
-        mainHeader.add(mainHeaderTitle, BorderLayout.NORTH);
-        mainHeader.add(mainHeaderSubtitle, BorderLayout.SOUTH);
-
-        mainHeaderTitle.setFont(font_medium.deriveFont(20f));
-        mainHeaderSubtitle.setFont(font_regular.deriveFont(14f));
+        mainHeader.add(trackTextField);
+        mainHeader.add(checkTrackButton);
+        mainHeader.add(listAllTrackButton);
 
         mainContentArea.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         mainContentArea.setBackground(Color.white);
@@ -165,9 +213,7 @@ public class Library implements ActionListener {
         footer.setBackground(Color.decode("#f9f9f9"));
         footer.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-
         footer.add(playButtonLabel);
-
 
         //@: Add Components to Main Area
         mainArea.setBackground(Color.white);
@@ -193,6 +239,9 @@ public class Library implements ActionListener {
         else if(e.getSource() == logoutButton){
             frame.dispose();
             new Login();
+        }
+        else if(e.getSource() == checkTrackButton){
+            System.out.println("Check track button clicked");
         }
     }
 }
