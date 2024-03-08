@@ -161,12 +161,12 @@ public class Login implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == submitButton){
-            frame.dispose();
-            new Jukebox();
-
-        }
-        else if(e.getSource() == registerButton){
+//        if(e.getSource() == submitButton){
+//            frame.dispose();
+//            new Jukebox();
+//
+//        }
+        if(e.getSource() == registerButton){
             new Register();
         }
     }
