@@ -105,16 +105,7 @@ public class Login implements ActionListener {
         submitButton.setForeground(Color.white);
         submitButton.setBackground(Color.decode(primary_dark));
         submitButton.setFont(font_medium.deriveFont(15f));
-        submitButton.addActionListener(this);
-
-        registerButton.setBounds(125, 275, 350, 50);
-        registerButton.setFocusable(false);
-        registerButton.setOpaque(true);
-        registerButton.setBorderPainted(false);
-        registerButton.setForeground(Color.decode(primary_dark));
-        registerButton.setBackground(Color.decode("#eeeeee"));
-        registerButton.setFont(font_medium.deriveFont(15f));
-        registerButton.addActionListener(new ActionListener() {
+        submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DbService dbService = new DbService();
@@ -129,6 +120,15 @@ public class Login implements ActionListener {
                 }
             }
         });
+
+        registerButton.setBounds(125, 275, 350, 50);
+        registerButton.setFocusable(false);
+        registerButton.setOpaque(true);
+        registerButton.setBorderPainted(false);
+        registerButton.setForeground(Color.decode(primary_dark));
+        registerButton.setBackground(Color.decode("#eeeeee"));
+        registerButton.setFont(font_medium.deriveFont(15f));
+        registerButton.addActionListener(this);
 
         form.add(username);
         form.add(password);
@@ -161,12 +161,12 @@ public class Login implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-//        if(e.getSource() == submitButton){
-//            frame.dispose();
-//            new Jukebox();
-//
-//        }
-        if(e.getSource() == registerButton){
+        if(e.getSource() == submitButton){
+            frame.dispose();
+            new Jukebox();
+
+        }
+        else if(e.getSource() == registerButton){
             new Register();
         }
     }

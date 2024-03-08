@@ -20,9 +20,9 @@ public class DbService {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
-            statement.executeUpdate("drop table if exists users");
-            statement.executeUpdate("drop table if exists songs");
-            statement.executeUpdate("drop table if exists playlists");
+//            statement.executeUpdate("drop table if exists users");
+//            statement.executeUpdate("drop table if exists songs");
+//            statement.executeUpdate("drop table if exists playlists");
 
 //            statement.execute("create table users (email string PRIMARY KEY, username string, phone_number string, password string)");
 //            statement.executeUpdate("create table songs (id integer, name string, artist string, rating integer, play_count integer)");
@@ -134,7 +134,7 @@ public class DbService {
             connection = DriverManager.getConnection("jdbc:sqlite:jukebox.db");
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
-            PreparedStatement myStmt = connection.prepareStatement("SELECT * FROM users WHERE email = ? AND password = ?");
+            PreparedStatement myStmt = connection.prepareStatement("SELECT * FROM USERS WHERE EMAIL = ? AND PASSWORD = ?");
             myStmt.setString(1,email);
             myStmt.setString(2,password);
 
@@ -142,8 +142,6 @@ public class DbService {
 
             while (resultSet.next()) {
                 rowCount ++;
-                String Name = resultSet.getString("email");
-                System.out.println(Name);
             }
 
 
