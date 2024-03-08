@@ -2,21 +2,25 @@ package components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import javax.sound.sampled.*;
 
-public class Jukebox implements MouseListener {
+public class Jukebox implements MouseListener, ActionListener {
+    JFrame frame;
     Clip clip;
-    JPanel mainListItem1, mainListItem2, mainListItem3;
+    JButton homeButton, checkLibButton, playlistButton, logoutButton;
+    JPanel mainListItem;
     String primary_dark = "#141414";
     Font font_bold, font_medium, font_light, font_regular;
 
     Jukebox(){
         //@: Initial Setup
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         frame.setSize(1000, 650);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -52,7 +56,7 @@ public class Jukebox implements MouseListener {
 
         JPanel mainArea = new JPanel(new BorderLayout());
 
-        JButton homeButton = new JButton("Home");
+        homeButton = new JButton("Home");
         homeButton.setBounds(32, 25, 135, 35);
         homeButton.setFocusable(false);
         homeButton.setOpaque(true);
@@ -61,9 +65,9 @@ public class Jukebox implements MouseListener {
         homeButton.setBackground(Color.decode(primary_dark));
         homeButton.setFont(font_medium.deriveFont(13f));
         homeButton.setPreferredSize(new Dimension(200, 50));
-        homeButton.addActionListener(e -> System.out.println("Home Clicked"));
+        homeButton.addActionListener(e -> {});
 
-        JButton checkLibButton = new JButton("My Library");
+        checkLibButton = new JButton("My Library");
         checkLibButton.setBounds(32, 75, 135, 35);
         checkLibButton.setFocusable(false);
         checkLibButton.setOpaque(true);
@@ -72,9 +76,9 @@ public class Jukebox implements MouseListener {
         checkLibButton.setBackground(Color.white);
         checkLibButton.setFont(font_regular.deriveFont(13f));
         checkLibButton.setPreferredSize(new Dimension(200, 50));
-        checkLibButton.addActionListener(e -> System.out.println("Check Library Clicked"));
+        checkLibButton.addActionListener(this);
 
-        JButton playlistButton = new JButton("My Playlist");
+        playlistButton = new JButton("My Playlist");
         playlistButton.setBounds(32, 125, 135, 35);
         playlistButton.setFocusable(false);
         playlistButton.setOpaque(true);
@@ -83,9 +87,9 @@ public class Jukebox implements MouseListener {
         playlistButton.setBackground(Color.white);
         playlistButton.setFont(font_regular.deriveFont(13f));
         playlistButton.setPreferredSize(new Dimension(200, 50));
-        playlistButton.addActionListener(e -> System.out.println("Playlist Clicked"));
+        playlistButton.addActionListener(this);
 
-        JButton logoutButton = new JButton("Logout");
+        logoutButton = new JButton("Logout");
         logoutButton.setBounds(32, 560, 135, 35);
         logoutButton.setFocusable(false);
         logoutButton.setOpaque(true);
@@ -94,10 +98,7 @@ public class Jukebox implements MouseListener {
         logoutButton.setBackground(Color.white);
         logoutButton.setFont(font_medium.deriveFont(13f));
         logoutButton.setPreferredSize(new Dimension(200, 50));
-        logoutButton.addActionListener(e -> {
-            frame.dispose();
-            new Login();
-        });
+        logoutButton.addActionListener(this);
 
         sideBar.add(homeButton);
         sideBar.add(checkLibButton);
@@ -108,7 +109,7 @@ public class Jukebox implements MouseListener {
         JPanel topMainArea = new JPanel(new BorderLayout());
         JPanel topUserArea = new JPanel();
 
-        JLabel userName = new JLabel("Richard404");
+        JLabel userName = new JLabel("Kirigaya404");
         ImageIcon icon = new ImageIcon("assets/avatar-2.png");
         ImageIcon avatarIcon = new ImageIcon(icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
         userName.setFont(font_regular.deriveFont(13f));
@@ -135,7 +136,7 @@ public class Jukebox implements MouseListener {
         JLabel mainHeaderSubtitle = new JLabel("Get better recommendations the more you listen.");
 
         JPanel mainListArea = new JPanel(new GridLayout(0, 4, 10, 10));
-        mainListItem1 = new JPanel(new BorderLayout());
+        mainListItem = new JPanel(new BorderLayout());
 
         JLabel label1 = new JLabel("<html><p style='text-align:center;'>Number One ( Bleach ) - Shiro Sagisu (Topic).</p></html>");
         ImageIcon labelIcon = new ImageIcon("assets/music.png");
@@ -147,208 +148,14 @@ public class Jukebox implements MouseListener {
         label1.setHorizontalTextPosition(JLabel.CENTER);
         label1.setVerticalTextPosition(JLabel.BOTTOM);
 
-        mainListItem2 = new JPanel(new BorderLayout());
-
-        JLabel label2 = new JLabel("<html><p style='text-align:center;'>I Got Love - Don Diablo, Nate Dogg.</p></html>");
-        label2.setIcon(labelIconImage);
-        label2.setFont(font_light.deriveFont(12f));
-        label2.setHorizontalAlignment(JLabel.CENTER);
-        label2.setVerticalAlignment(JLabel.CENTER);
-        label2.setHorizontalTextPosition(JLabel.CENTER);
-        label2.setVerticalTextPosition(JLabel.BOTTOM);
-
-        mainListItem3 = new JPanel(new BorderLayout());
-
-        JLabel label3 = new JLabel("<html><p style='text-align:center;'>To The Wire (Album X) - Julian Jordan.</p></html>");
-        label3.setIcon(labelIconImage);
-        label3.setFont(font_light.deriveFont(12f));
-        label3.setHorizontalAlignment(JLabel.CENTER);
-        label3.setVerticalAlignment(JLabel.CENTER);
-        label3.setHorizontalTextPosition(JLabel.CENTER);
-        label3.setVerticalTextPosition(JLabel.BOTTOM);
-
-        JPanel mainListItem4 = new JPanel(new BorderLayout());
-
-        JLabel label4 = new JLabel("<html><p style='text-align:center;'>Things I Said (To The Wire) - Nu Aspect.</p></html>");
-        label4.setIcon(labelIconImage);
-        label4.setFont(font_light.deriveFont(12f));
-        label4.setHorizontalAlignment(JLabel.CENTER);
-        label4.setVerticalAlignment(JLabel.CENTER);
-        label4.setHorizontalTextPosition(JLabel.CENTER);
-        label4.setVerticalTextPosition(JLabel.BOTTOM);
-
-        JPanel mainListItem5 = new JPanel(new BorderLayout());
-
-        JLabel label5 = new JLabel("<html><p style='text-align:center;'>Clearing The Mind - Bear McCreary, Sparks & Shadow.</p></html>");
-        label5.setIcon(labelIconImage);
-        label5.setFont(font_light.deriveFont(12f));
-        label5.setHorizontalAlignment(JLabel.CENTER);
-        label5.setVerticalAlignment(JLabel.CENTER);
-        label5.setHorizontalTextPosition(JLabel.CENTER);
-        label5.setVerticalTextPosition(JLabel.BOTTOM);
-
-        JPanel mainListItem6 = new JPanel(new BorderLayout());
-
-        JLabel label6 = new JLabel("<html><p style='text-align:center;'>Face The Past, Face The Future - Bear McCreary, Sparks & Shadow.</p></html>");
-        label6.setIcon(labelIconImage);
-        label6.setFont(font_light.deriveFont(12f));
-        label6.setHorizontalAlignment(JLabel.CENTER);
-        label6.setVerticalAlignment(JLabel.CENTER);
-        label6.setHorizontalTextPosition(JLabel.CENTER);
-        label6.setVerticalTextPosition(JLabel.BOTTOM);
-
-        JPanel mainListItem7 = new JPanel(new BorderLayout());
-
-        JLabel label7 = new JLabel("<html><p style='text-align:center;'>Master Thyself - Bear McCreary, Sparks & Shadow.</p></html>");
-        label7.setIcon(labelIconImage);
-        label7.setFont(font_light.deriveFont(12f));
-        label7.setHorizontalAlignment(JLabel.CENTER);
-        label7.setVerticalAlignment(JLabel.CENTER);
-        label7.setHorizontalTextPosition(JLabel.CENTER);
-        label7.setVerticalTextPosition(JLabel.BOTTOM);
-
-        JPanel mainListItem8 = new JPanel(new BorderLayout());
-
-        JLabel label8 = new JLabel("<html><p style='text-align:center;'>Forgive Our Trespasses - Nandipha808, Ceeka RSA, DEMOLA.</p></html>");
-        label8.setIcon(labelIconImage);
-        label8.setFont(font_light.deriveFont(12f));
-        label8.setHorizontalAlignment(JLabel.CENTER);
-        label8.setVerticalAlignment(JLabel.CENTER);
-        label8.setHorizontalTextPosition(JLabel.CENTER);
-        label8.setVerticalTextPosition(JLabel.BOTTOM);
-
-        JPanel mainListItem9 = new JPanel(new BorderLayout());
-
-        JLabel label9 = new JLabel("<html><p style='text-align:center;'>Ohema - Victony, Crayon, Bella Shmurda.</p></html>");
-        label9.setIcon(labelIconImage);
-        label9.setFont(font_light.deriveFont(12f));
-        label9.setHorizontalAlignment(JLabel.CENTER);
-        label9.setVerticalAlignment(JLabel.CENTER);
-        label9.setHorizontalTextPosition(JLabel.CENTER);
-        label9.setVerticalTextPosition(JLabel.BOTTOM);
-
-        JPanel mainListItem10 = new JPanel(new BorderLayout());
-
-        JLabel label10 = new JLabel("<html><p style='text-align:center;'>Ayo Girl (Fayahh Beat) - Robinson, Jason Derulo, Rema.</p></html>");
-        label10.setIcon(labelIconImage);
-        label10.setFont(font_light.deriveFont(12f));
-        label10.setHorizontalAlignment(JLabel.CENTER);
-        label10.setVerticalAlignment(JLabel.CENTER);
-        label10.setHorizontalTextPosition(JLabel.CENTER);
-        label10.setVerticalTextPosition(JLabel.BOTTOM);
-
-        JPanel mainListItem11 = new JPanel(new BorderLayout());
-
-        JLabel label11 = new JLabel("<html><p style='text-align:center;'>Unbreakable (with Sam Grey) - TELYKAST, Sam Gray.</p></html>");
-        label11.setIcon(labelIconImage);
-        label11.setFont(font_light.deriveFont(12f));
-        label11.setHorizontalAlignment(JLabel.CENTER);
-        label11.setVerticalAlignment(JLabel.CENTER);
-        label11.setHorizontalTextPosition(JLabel.CENTER);
-        label11.setVerticalTextPosition(JLabel.BOTTOM);
-
-        JPanel mainListItem12 = new JPanel(new BorderLayout());
-
-        JLabel label12 = new JLabel("<html><p style='text-align:center;'>Happiness (feat. Asake & Gunna) - Sarz, Asake, Gunna.</p></html>");
-        label12.setIcon(labelIconImage);
-        label12.setFont(font_light.deriveFont(12f));
-        label12.setHorizontalAlignment(JLabel.CENTER);
-        label12.setVerticalAlignment(JLabel.CENTER);
-        label12.setHorizontalTextPosition(JLabel.CENTER);
-        label12.setVerticalTextPosition(JLabel.BOTTOM);
-
-        JPanel mainListItem13 = new JPanel(new BorderLayout());
-
-        JLabel label13 = new JLabel("<html><p style='text-align:center;'>Father Stretch My Hands Pt. 1 - Kanye West.</p></html>");
-        label13.setIcon(labelIconImage);
-        label13.setFont(font_light.deriveFont(12f));
-        label13.setHorizontalAlignment(JLabel.CENTER);
-        label13.setVerticalAlignment(JLabel.CENTER);
-        label13.setHorizontalTextPosition(JLabel.CENTER);
-        label13.setVerticalTextPosition(JLabel.BOTTOM);
-
         mainListArea.setBackground(Color.white);
-        mainListArea.add(mainListItem1);
-        mainListArea.add(mainListItem2);
-        mainListArea.add(mainListItem3);
-        mainListArea.add(mainListItem4);
-        mainListArea.add(mainListItem5);
-        mainListArea.add(mainListItem6);
-        mainListArea.add(mainListItem7);
-        mainListArea.add(mainListItem8);
-        mainListArea.add(mainListItem9);
-        mainListArea.add(mainListItem10);
-        mainListArea.add(mainListItem11);
-        mainListArea.add(mainListItem12);
-        mainListArea.add(mainListItem13);
+        mainListArea.add(mainListItem);
 
-        mainListItem1.add(label1, BorderLayout.CENTER);
-        mainListItem1.setBackground(Color.decode("#fafafa"));
-        mainListItem1.addMouseListener(this);
-        mainListItem1.setPreferredSize(new Dimension(mainListItem1.getWidth(), 150));
-        mainListItem1.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem2.add(label2, BorderLayout.CENTER);
-        mainListItem2.setBackground(Color.decode("#fafafa"));
-        mainListItem2.addMouseListener(this);
-        mainListItem2.setPreferredSize(new Dimension(mainListItem2.getWidth(), 150));
-        mainListItem2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem3.add(label3, BorderLayout.CENTER);
-        mainListItem3.setBackground(Color.decode("#fafafa"));
-        mainListItem3.addMouseListener(this);
-        mainListItem3.setPreferredSize(new Dimension(mainListItem3.getWidth(), 150));
-        mainListItem3.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem4.add(label4, BorderLayout.CENTER);
-        mainListItem4.setBackground(Color.decode("#fafafa"));
-        mainListItem4.setPreferredSize(new Dimension(mainListItem4.getWidth(), 150));
-        mainListItem4.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem5.add(label5, BorderLayout.CENTER);
-        mainListItem5.setBackground(Color.decode("#fafafa"));
-        mainListItem5.setPreferredSize(new Dimension(mainListItem5.getWidth(), 150));
-        mainListItem5.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem6.add(label6, BorderLayout.CENTER);
-        mainListItem6.setBackground(Color.decode("#fafafa"));
-        mainListItem6.setPreferredSize(new Dimension(mainListItem6.getWidth(), 150));
-        mainListItem6.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem7.add(label7, BorderLayout.CENTER);
-        mainListItem7.setBackground(Color.decode("#fafafa"));
-        mainListItem7.setPreferredSize(new Dimension(mainListItem7.getWidth(), 150));
-        mainListItem7.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem8.add(label8, BorderLayout.CENTER);
-        mainListItem8.setBackground(Color.decode("#fafafa"));
-        mainListItem8.setPreferredSize(new Dimension(mainListItem8.getWidth(), 150));
-        mainListItem8.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem9.add(label9, BorderLayout.CENTER);
-        mainListItem9.setBackground(Color.decode("#fafafa"));
-        mainListItem9.setPreferredSize(new Dimension(mainListItem9.getWidth(), 150));
-        mainListItem9.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem10.add(label10, BorderLayout.CENTER);
-        mainListItem10.setBackground(Color.decode("#fafafa"));
-        mainListItem10.setPreferredSize(new Dimension(mainListItem10.getWidth(), 150));
-        mainListItem10.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem11.add(label11, BorderLayout.CENTER);
-        mainListItem11.setBackground(Color.decode("#fafafa"));
-        mainListItem11.setPreferredSize(new Dimension(mainListItem11.getWidth(), 150));
-        mainListItem11.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem12.add(label12, BorderLayout.CENTER);
-        mainListItem12.setBackground(Color.decode("#fafafa"));
-        mainListItem12.setPreferredSize(new Dimension(mainListItem12.getWidth(), 150));
-        mainListItem12.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        mainListItem13.add(label13, BorderLayout.CENTER);
-        mainListItem13.setBackground(Color.decode("#fafafa"));
-        mainListItem13.setPreferredSize(new Dimension(mainListItem13.getWidth(), 150));
-        mainListItem13.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainListItem.add(label1, BorderLayout.CENTER);
+        mainListItem.setBackground(Color.decode("#fafafa"));
+        mainListItem.addMouseListener(this);
+        mainListItem.setPreferredSize(new Dimension(mainListItem.getWidth(), 150));
+        mainListItem.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JScrollPane mainListScrollArea = new JScrollPane(mainListArea);
         mainListScrollArea.setBorder(null);
@@ -366,10 +173,27 @@ public class Jukebox implements MouseListener {
         mainContentArea.add(mainHeader, BorderLayout.NORTH);
         mainContentArea.add(mainListScrollArea);
 
+        //@: Footer Area
+        JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel playButtonLabel = new JLabel("PLAY CONTROLS HERE!");
+        playButtonLabel.setForeground(Color.decode(primary_dark));
+        playButtonLabel.setFont(font_medium.deriveFont(15f));
+        playButtonLabel.setHorizontalAlignment(JLabel.CENTER);
+        playButtonLabel.setVerticalAlignment(JLabel.CENTER);
+        playButtonLabel.setHorizontalTextPosition(JLabel.CENTER);
+        playButtonLabel.setVerticalTextPosition(JLabel.BOTTOM);
+
+        footer.setBackground(Color.decode("#f9f9f9"));
+        footer.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+
+        footer.add(playButtonLabel);
+
         //@: Add Components to Main Area
         mainArea.setBackground(Color.white);
         mainArea.add(topMainArea, BorderLayout.NORTH);
         mainArea.add(mainContentArea);
+        mainArea.add(footer, BorderLayout.SOUTH);
 
         //@: Add Components to Frame
         frame.add(sideBar, BorderLayout.WEST);
@@ -378,7 +202,7 @@ public class Jukebox implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(e.getSource() == mainListItem1){
+        if(e.getSource() == mainListItem){
             File file = new File("assets/songs/1.wav");
             try {
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
@@ -389,45 +213,9 @@ public class Jukebox implements MouseListener {
                 gainControl.setValue(-12.0f);
 
                 //@: Change UI to show that a song is playing
-                mainListItem1.setBackground(Color.decode("#e1fce2"));
+                mainListItem.setBackground(Color.decode("#e1fce2"));
 
                 //@: Start playing the audio
-                clip.start();
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        else if(e.getSource() == mainListItem2){
-            File file = new File("assets/songs/2.wav");
-            try {
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioStream);
-                //@: Volume Control
-                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                gainControl.setValue(-7.0f);
-
-                mainListItem2.setBackground(Color.decode("#e1fce2"));
-
-                clip.start();
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        else if(e.getSource() == mainListItem3){
-            File file = new File("assets/songs/3.wav");
-            try {
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioStream);
-                //@: Volume Control
-                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                gainControl.setValue(-7.0f);
-
-                mainListItem3.setBackground(Color.decode("#e1fce2"));
-
                 clip.start();
             } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
                 throw new RuntimeException(ex);
@@ -446,4 +234,20 @@ public class Jukebox implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e){}
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == checkLibButton){
+            frame.dispose();
+            new Library();
+        }
+        else if(e.getSource() == playlistButton){
+            frame.dispose();
+            new Playlist();
+        }
+        else if(e.getSource() == logoutButton){
+            frame.dispose();
+            new Login();
+        }
+    }
 }

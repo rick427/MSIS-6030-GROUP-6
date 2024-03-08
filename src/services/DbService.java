@@ -4,11 +4,9 @@ import java.sql.*;
 
 public class DbService {
 
-    public DbService() {
+    public DbService() {}
 
-    }
-
-    public  void createData() {
+    public void createData() {
         Connection connection = null;
         try {
             // create a database connection
@@ -68,6 +66,21 @@ public class DbService {
     }
 
     public void getAllSongs() {
+        Connection connection = null;
+        try{
+            connection = DriverManager.getConnection("jdbc:sqlite:jukebox.db");
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
 
+            ResultSet rs = statement.executeQuery("select * from songs");
+            while(rs.next()){
+                System.out.println(rs.getString("name"));
+            }
+
+        } catch(SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
     }
 }
