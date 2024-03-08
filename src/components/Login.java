@@ -1,5 +1,7 @@
 package components;
 
+import services.DbService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -112,7 +114,21 @@ public class Login implements ActionListener {
         registerButton.setForeground(Color.decode(primary_dark));
         registerButton.setBackground(Color.decode("#eeeeee"));
         registerButton.setFont(font_medium.deriveFont(15f));
-        registerButton.addActionListener(this);
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DbService dbService = new DbService();
+                boolean answer = dbService.login(username.getText().toString(), password.getText().toString());
+                if (answer){
+                    System.out.println("Worked");
+                    frame.dispose();
+                    new Jukebox();
+                }
+                else {
+                    System.out.println("Failed");
+                }
+            }
+        });
 
         form.add(username);
         form.add(password);
@@ -145,12 +161,12 @@ public class Login implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == submitButton){
-            frame.dispose();
-            new Jukebox();
-
-        }
-        else if(e.getSource() == registerButton){
+//        if(e.getSource() == submitButton){
+//            frame.dispose();
+//            new Jukebox();
+//
+//        }
+        if(e.getSource() == registerButton){
             new Register();
         }
     }

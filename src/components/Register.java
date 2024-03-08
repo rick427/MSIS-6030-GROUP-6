@@ -1,5 +1,8 @@
 package components;
 
+import Models.UserData;
+import services.DbService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -161,7 +164,25 @@ public class Register implements ActionListener {
         submitButton.setForeground(Color.white);
         submitButton.setBackground(Color.decode(primary_dark));
         submitButton.setFont(font_medium.deriveFont(15f));
-        submitButton.addActionListener(this);
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UserData userData = new UserData();
+                userData.setEmail(email.getText().toString());
+                userData.setUsername(username.getText().toString());
+                userData.setPhone_number(phoneNumber.getText().toString());
+                userData.setPassword(password.getText().toString());
+                DbService dbService = new DbService();
+                boolean answer = dbService.signup(userData);
+                if (answer){
+                    System.out.println("Worked");
+                    frame.dispose();
+                }
+                else {
+                    System.out.println("Failed");
+                }
+            }
+        });
 
         //@: Add Components to Form
         form.add(username);
@@ -197,7 +218,7 @@ public class Register implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == submitButton){
-            frame.dispose();
+//            frame.dispose();
         }
     }
 }
