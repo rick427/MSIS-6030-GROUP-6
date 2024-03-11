@@ -78,6 +78,7 @@ public class Jukebox implements MouseListener, ActionListener {
         checkLibButton.setPreferredSize(new Dimension(200, 50));
         checkLibButton.addActionListener(this);
 
+
         playlistButton = new JButton("My Playlist");
         playlistButton.setBounds(32, 125, 135, 35);
         playlistButton.setFocusable(false);
@@ -128,50 +129,91 @@ public class Jukebox implements MouseListener, ActionListener {
         topUserArea.add(userName);
         topUserArea.setBackground(Color.white);
 
+
+        /*THIS IS FOR THE HOME*/
+
         //@: Main Content Area Section
-        JPanel mainContentArea = new JPanel(new BorderLayout(0, 20));
+        JPanel mainContentAreaHome = getjPanelHome();
 
-        JPanel mainHeader = new JPanel(new BorderLayout(0, 3));
-        JLabel mainHeaderTitle = new JLabel("Trending Today.");
-        JLabel mainHeaderSubtitle = new JLabel("Get better recommendations the more you listen.");
+        /*THIS IS THE END OF THE HOME*/
 
-        JPanel mainListArea = new JPanel(new GridLayout(0, 4, 10, 10));
-        mainListItem = new JPanel(new BorderLayout());
+        /*THIS IS THE LIBRARY*/
 
-        JLabel label1 = new JLabel("<html><p style='text-align:center;'>Number One ( Bleach ) - Shiro Sagisu (Topic).</p></html>");
-        ImageIcon labelIcon = new ImageIcon("assets/music.png");
-        ImageIcon labelIconImage = new ImageIcon(labelIcon.getImage().getScaledInstance(80, 50, Image.SCALE_SMOOTH));
-        label1.setIcon(labelIconImage);
-        label1.setFont(font_light.deriveFont(12f));
-        label1.setHorizontalAlignment(JLabel.CENTER);
-        label1.setVerticalAlignment(JLabel.CENTER);
-        label1.setHorizontalTextPosition(JLabel.CENTER);
-        label1.setVerticalTextPosition(JLabel.BOTTOM);
+        //@: Main Content Area Section
+        JPanel mainContentAreaLibrary = getjPanelLIbrary();
 
-        mainListArea.setBackground(Color.white);
-        mainListArea.add(mainListItem);
+        /*THIS IS THE END OF THE LIBRARY*/
+        
+        
+        /*THE BEGINNING OF PLAYLIST*/
 
-        mainListItem.add(label1, BorderLayout.CENTER);
-        mainListItem.setBackground(Color.decode("#fafafa"));
-        mainListItem.addMouseListener(this);
-        mainListItem.setPreferredSize(new Dimension(mainListItem.getWidth(), 150));
-        mainListItem.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        //@: Main Content Area Section
+        JPanel mainContentAreaPlaylist = getjPanelPlaylist();
 
-        JScrollPane mainListScrollArea = new JScrollPane(mainListArea);
-        mainListScrollArea.setBorder(null);
-        //scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        /*THE END OF THE PLAYLIST*/
 
-        mainHeader.setBackground(Color.white);
-        mainHeader.add(mainHeaderTitle, BorderLayout.NORTH);
-        mainHeader.add(mainHeaderSubtitle, BorderLayout.SOUTH);
+        homeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                mainContentAreaHome.setVisible(true);
+//                mainContentAreaLibrary.setVisible(false);
+//                mainContentAreaPlaylist.setVisible(false);
 
-        mainHeaderTitle.setFont(font_medium.deriveFont(20f));
-        mainHeaderSubtitle.setFont(font_regular.deriveFont(14f));
+                mainArea.add(mainContentAreaHome);
+                mainArea.remove(mainContentAreaPlaylist);
+                mainArea.remove(mainContentAreaLibrary);
 
-        mainContentArea.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        mainContentArea.setBackground(Color.white);
-        mainContentArea.add(mainHeader, BorderLayout.NORTH);
-        mainContentArea.add(mainListScrollArea);
+                mainArea.revalidate();
+                mainArea.repaint();
+            }
+        });
+
+        checkLibButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                frame.dispose();
+//                new Library();
+                System.out.println("HERE");
+                try{
+                    mainArea.remove(mainContentAreaHome);
+                    mainArea.remove(mainContentAreaPlaylist);
+                    mainArea.add(mainContentAreaLibrary);
+
+
+//                    mainContentAreaHome.setVisible(false);
+//                    mainContentAreaLibrary.setVisible(true);
+//                    mainContentAreaPlaylist.setVisible(false);
+//                    mainArea.revalidate();
+//                    mainArea.repaint();
+
+                    System.out.println("Removing");
+
+                    frame.revalidate();
+                    frame.repaint();
+                }
+                catch (Exception exception){
+                    System.out.print(exception);
+//                    throw exception;
+                }
+            }
+        });
+
+        playlistButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+//                mainContentAreaHome.setVisible(false);
+//                mainContentAreaLibrary.setVisible(false);
+//                mainContentAreaPlaylist.setVisible(true);
+
+                mainArea.remove(mainContentAreaHome);
+                mainArea.add(mainContentAreaPlaylist);
+                mainArea.remove(mainContentAreaLibrary);
+
+                mainArea.revalidate();
+                mainArea.repaint();
+            }
+        });
 
         //@: Footer Area
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -192,12 +234,127 @@ public class Jukebox implements MouseListener, ActionListener {
         //@: Add Components to Main Area
         mainArea.setBackground(Color.white);
         mainArea.add(topMainArea, BorderLayout.NORTH);
-        mainArea.add(mainContentArea);
+//        mainArea.add(mainContentAreaPlaylist);
+//        mainArea.add(mainContentAreaLibrary);
+        mainArea.add(mainContentAreaHome);
+        mainContentAreaHome.setVisible(true);;
+//        mainContentAreaLibrary.setVisible(false);
+//        mainContentAreaPlaylist.setVisible(false);
+        mainArea.revalidate();
+        mainArea.repaint();
+//        mainArea.layout();
         mainArea.add(footer, BorderLayout.SOUTH);
 
         //@: Add Components to Frame
         frame.add(sideBar, BorderLayout.WEST);
         frame.add(mainArea, BorderLayout.CENTER);
+//        frame.add(mainArea);
+//        frame.getContentPane().add(mainContentAreaHome);
+
+    }
+
+    private JPanel getjPanelPlaylist() {
+        System.out.println("Creating playlist panel");
+        JPanel mainContentAreaPlaylist = new JPanel(new BorderLayout(0, 20));
+
+        JPanel mainHeaderPlaylist = new JPanel(new BorderLayout(0, 3));
+        JLabel mainHeaderTitlePlaylist = new JLabel("My Playlists.");
+        JLabel mainHeaderSubtitlePlaylist = new JLabel("Lorem ipsum dolor shiat kongo smith");
+
+        JPanel mainListArea = new JPanel(new GridLayout(0, 4, 10, 10));
+
+        JScrollPane mainListScrollArea = new JScrollPane(mainListArea);
+        mainListScrollArea.setBorder(null);
+        //scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        mainHeaderPlaylist.setBackground(Color.white);
+        mainHeaderPlaylist.add(mainHeaderTitlePlaylist, BorderLayout.NORTH);
+        mainHeaderPlaylist.add(mainHeaderSubtitlePlaylist, BorderLayout.SOUTH);
+
+        mainHeaderTitlePlaylist.setFont(font_medium.deriveFont(20f));
+        mainHeaderSubtitlePlaylist.setFont(font_regular.deriveFont(14f));
+
+        mainContentAreaPlaylist.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainContentAreaPlaylist.setBackground(Color.white);
+        mainContentAreaPlaylist.add(mainHeaderPlaylist, BorderLayout.NORTH);
+        mainContentAreaPlaylist.add(mainListScrollArea);
+        return mainContentAreaPlaylist;
+    }
+
+    private JPanel getjPanelLIbrary() {
+        System.out.println("Creating Library panel");
+        JPanel mainContentAreaLibrary = new JPanel(new BorderLayout(0, 20));
+
+        JPanel mainHeaderLibrary = new JPanel(new BorderLayout(0, 3));
+        JLabel mainHeaderTitleLibrary = new JLabel("My Library.");
+        JLabel mainHeaderSubtitleLibrary = new JLabel("Explore your library for a more personalized experience.");
+
+        JPanel mainListArea = new JPanel(new GridLayout(0, 4, 10, 10));
+
+        JScrollPane mainListScrollArea = new JScrollPane(mainListArea);
+        mainListScrollArea.setBorder(null);
+        //scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        mainHeaderLibrary.setBackground(Color.white);
+        mainHeaderLibrary.add(mainHeaderTitleLibrary, BorderLayout.NORTH);
+        mainHeaderLibrary.add(mainHeaderSubtitleLibrary, BorderLayout.SOUTH);
+
+        mainHeaderTitleLibrary.setFont(font_medium.deriveFont(20f));
+        mainHeaderSubtitleLibrary.setFont(font_regular.deriveFont(14f));
+
+        mainContentAreaLibrary.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainContentAreaLibrary.setBackground(Color.white);
+        mainContentAreaLibrary.add(mainHeaderLibrary, BorderLayout.NORTH);
+        mainContentAreaLibrary.add(mainListScrollArea);
+        return mainContentAreaLibrary;
+    }
+
+    private JPanel getjPanelHome() {
+        System.out.println("Creating Home panel");
+        JPanel mainContentAreaHome = new JPanel(new BorderLayout(0, 20));
+
+        JPanel mainHeaderHome = new JPanel(new BorderLayout(0, 3));
+        JLabel mainHeaderTitleHome = new JLabel("Trending Today.");
+        JLabel mainHeaderSubtitleHome = new JLabel("Get better recommendations the more you listen.");
+
+        JPanel mainListAreaHome = new JPanel(new GridLayout(0, 4, 10, 10));
+        mainListItem = new JPanel(new BorderLayout());
+
+        JLabel label1 = new JLabel("<html><p style='text-align:center;'>Number One ( Bleach ) - Shiro Sagisu (Topic).</p></html>");
+        ImageIcon labelIcon = new ImageIcon("assets/music.png");
+        ImageIcon labelIconImage = new ImageIcon(labelIcon.getImage().getScaledInstance(80, 50, Image.SCALE_SMOOTH));
+        label1.setIcon(labelIconImage);
+        label1.setFont(font_light.deriveFont(12f));
+        label1.setHorizontalAlignment(JLabel.CENTER);
+        label1.setVerticalAlignment(JLabel.CENTER);
+        label1.setHorizontalTextPosition(JLabel.CENTER);
+        label1.setVerticalTextPosition(JLabel.BOTTOM);
+
+        mainListAreaHome.setBackground(Color.white);
+        mainListAreaHome.add(mainListItem);
+
+        mainListItem.add(label1, BorderLayout.CENTER);
+        mainListItem.setBackground(Color.decode("#fafafa"));
+        mainListItem.addMouseListener(this);
+        mainListItem.setPreferredSize(new Dimension(mainListItem.getWidth(), 150));
+        mainListItem.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JScrollPane mainListScrollAreaHome = new JScrollPane(mainListAreaHome);
+        mainListScrollAreaHome.setBorder(null);
+        //scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        mainHeaderHome.setBackground(Color.white);
+        mainHeaderHome.add(mainHeaderTitleHome, BorderLayout.NORTH);
+        mainHeaderHome.add(mainHeaderSubtitleHome, BorderLayout.SOUTH);
+
+        mainHeaderTitleHome.setFont(font_medium.deriveFont(20f));
+        mainHeaderSubtitleHome.setFont(font_regular.deriveFont(14f));
+
+        mainContentAreaHome.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainContentAreaHome.setBackground(Color.white);
+        mainContentAreaHome.add(mainHeaderHome, BorderLayout.NORTH);
+        mainContentAreaHome.add(mainListScrollAreaHome);
+        return mainContentAreaHome;
     }
 
     @Override
@@ -238,12 +395,13 @@ public class Jukebox implements MouseListener, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == checkLibButton){
-            frame.dispose();
-            new Library();
+//            frame.dispose();
+//            new Library();
+
         }
         else if(e.getSource() == playlistButton){
-            frame.dispose();
-            new Playlist();
+//            frame.dispose();
+//            new Playlist();
         }
         else if(e.getSource() == logoutButton){
             frame.dispose();
