@@ -1,6 +1,7 @@
 package components;
 
 import services.DbService;
+import services.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -112,6 +113,7 @@ public class Login implements ActionListener {
                 boolean answer = dbService.login(username.getText().toString(), password.getText().toString());
                 if (answer){
                     System.out.println("Worked");
+                    User.username = dbService.getUsername(username.getText());
                     frame.dispose();
                     new Jukebox();
                 }

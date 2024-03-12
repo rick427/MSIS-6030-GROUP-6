@@ -188,4 +188,28 @@ public class DbService {
             }
         }
     }
+
+    public String getUsername(String Email) {
+        Connection connection = null;
+        String username = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:jukebox.db");
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+            PreparedStatement myStmt = connection.prepareStatement("SELECT USERNAME FROM USERS WHERE EMAIL = ? ");
+            myStmt.setString(1, Email);
+
+            ResultSet resultSet = myStmt.executeQuery();
+            while (resultSet.next()){
+                username = resultSet.getString("USERNAME");
+            }
+
+
+        } catch (SQLException exception) {
+            System.out.println(exception.getMessage());
+            return exception.getMessage();
+        }
+        return username;
+    }
 }

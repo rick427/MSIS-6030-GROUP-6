@@ -1,5 +1,7 @@
 package components;
 
+import services.User;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -110,7 +112,8 @@ public class Jukebox implements MouseListener, ActionListener {
         JPanel topMainArea = new JPanel(new BorderLayout());
         JPanel topUserArea = new JPanel();
 
-        JLabel userName = new JLabel("Kirigaya404");
+        JLabel userName = new JLabel(User.username);
+//        JLabel userName = new JLabel("Kirigaya404");
         ImageIcon icon = new ImageIcon("assets/avatar-2.png");
         ImageIcon avatarIcon = new ImageIcon(icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
         userName.setFont(font_regular.deriveFont(13f));
@@ -178,13 +181,6 @@ public class Jukebox implements MouseListener, ActionListener {
                     mainArea.remove(mainContentAreaHome);
                     mainArea.remove(mainContentAreaPlaylist);
                     mainArea.add(mainContentAreaLibrary);
-
-
-//                    mainContentAreaHome.setVisible(false);
-//                    mainContentAreaLibrary.setVisible(true);
-//                    mainContentAreaPlaylist.setVisible(false);
-//                    mainArea.revalidate();
-//                    mainArea.repaint();
 
                     System.out.println("Removing");
 
