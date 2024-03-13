@@ -1,5 +1,7 @@
 package components;
 
+import Models.SongData;
+import services.DbService;
 import services.User;
 
 import javax.swing.*;
@@ -10,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import javax.sound.sampled.*;
 
 public class Jukebox implements MouseListener, ActionListener {
@@ -306,6 +309,9 @@ public class Jukebox implements MouseListener, ActionListener {
     }
 
     private JPanel getjPanelHome() {
+        DbService dbService = new DbService();
+        List<SongData> songDataList = dbService.getAllSongs();
+        System.out.println(songDataList);
         System.out.println("Creating Home panel");
         JPanel mainContentAreaHome = new JPanel(new BorderLayout(0, 20));
 

@@ -2,7 +2,7 @@ package TableStructure;
 
 public class SongTable {
     private final String TABLE_NAME = "SONGS";
-    private final String SONG_ID = "ID";
+    private final String SONG_ID = "SONG_ID";
     private final String SONG_NAME = "NAME";
     private final String SONG_ARTIST = "ARTIST";
     private final String SONG_RATING = "RATING";

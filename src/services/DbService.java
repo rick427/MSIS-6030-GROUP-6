@@ -1,19 +1,26 @@
 package services;
 
+import Models.SongData;
 import Models.UserData;
+import TableStructure.PlaylistTable;
 import TableStructure.SongTable;
 import TableStructure.UserTable;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DbService {
 
     public DbService() {}
+    SongTable songTable = new SongTable();
+    UserTable userTable = new UserTable();
+    PlaylistTable playlistTable = new PlaylistTable();
 
     public void createData() {
         Connection connection = null;
-        UserTable userTable = new UserTable();
-        SongTable songTable = new SongTable();
+
+
         try {
             // create a database connection
             connection = DriverManager.getConnection("jdbc:sqlite:jukebox.db");
@@ -28,7 +35,7 @@ public class DbService {
 //            statement.executeUpdate("create table songs (id integer, name string, artist string, rating integer, play_count integer)");
 //            statement.executeUpdate("create table playlists (id integer, song_id integer, name string)");
             String createUserTableSQL = "CREATE TABLE IF NOT EXISTS " + userTable.getTableName() +  " (\n"
-                    + userTable.getEMAIL() + " TEXT PRIMARY kEY, \n"
+                    + userTable.getEMAIL() + " TEXT PRIMARY KEY, \n"
                     + userTable.getUSERNAME() + " TEXT, \n"
                     + userTable.getPhoneNo() + " TEXT, \n"
                     + userTable.getPASSWORD() + " TEXT \n"
@@ -42,8 +49,17 @@ public class DbService {
                     + songTable.getSONG_PLAY_COUNT() + " INT \n"
                     + ");";
 
+            String createPlaylistTableSQL = "CREATE TABLE IF NOT EXISTS " + playlistTable.getTABLE_NAME() +  " (\n"
+                    + playlistTable.getPLAYLIST_ID() + " TEXT, \n"
+                    + playlistTable.getSONG() + " TEXT, \n"
+                    + playlistTable.getUSER_EMAIL() + " TEXT, \n"
+                    + "FOREIGN KEY (" + playlistTable.getUSER_EMAIL() + ") "
+                    + "REFERENCES " + userTable.getTableName() + "(" + userTable.getEMAIL() + "), \n"
+                    + "PRIMARY KEY (" + playlistTable.getPLAYLIST_ID() + ", " + playlistTable.getUSER_EMAIL() + "));";
+
             statement.execute(createUserTableSQL);
             statement.execute(createSongTableSQL);
+            statement.execute(createPlaylistTableSQL);
 
 //            statement.executeUpdate("insert into songs values(1, 'Number One (Bleach)', 'Shiro Sagisu (Topic)', 5,  0)");
 //            statement.executeUpdate("insert into songs values(2, 'I Got Love', 'Don Diablo, Nate Dogg', 5,  0)");
@@ -88,7 +104,8 @@ public class DbService {
 
     //Comment
 
-    public void getAllSongs() {
+    public List<SongData> getAllSongs() {
+        List<SongData> songList = new ArrayList<>();
         Connection connection = null;
         try{
             connection = DriverManager.getConnection("jdbc:sqlite:jukebox.db");
@@ -97,7 +114,9 @@ public class DbService {
 
             ResultSet rs = statement.executeQuery("select * from songs");
             while(rs.next()){
-                System.out.println(rs.getString("name"));
+//                System.out.println(rs.getString("name"));
+                SongData songData = new SongData(rs.getInt(songTable.getSONG_ID()), rs.getString(songTable.getSONG_NAME()), rs.getString(songTable.getSONG_ARTIST()), rs.getString(songTable.getSONG_RATING()), rs.getString(songTable.getSONG_PLAY_COUNT()));
+                songList.add(songData);
             }
 
         } catch(SQLException e) {
@@ -105,6 +124,17 @@ public class DbService {
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+        finally {
+            try {
+                if(connection != null) connection.close();
+            }
+            catch(SQLException e) {
+                // connection close failed.
+                System.err.println(e.getMessage());
+            }
+        }
+
+        return songList;
     }
 
 //    public void createUser(UserData userData){
