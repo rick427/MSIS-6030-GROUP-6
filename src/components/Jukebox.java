@@ -313,10 +313,15 @@ public class Jukebox implements MouseListener, ActionListener {
         JLabel mainHeaderTitleHome = new JLabel("Trending Today.");
         JLabel mainHeaderSubtitleHome = new JLabel("Get better recommendations the more you listen.");
 
-        JPanel mainListAreaHome = new JPanel(new GridLayout(0, 4, 10, 10));
+        JPanel mainListAreaHome = new JPanel(new GridLayout(0, 3, 10, 10));
         mainListItem = new JPanel(new BorderLayout());
+//        mainListItem =  new JPanel(new GridLayout(1,3));
 
-        JLabel label1 = new JLabel("<html><p style='text-align:center;'>Number One ( Bleach ) - Shiro Sagisu (Topic).</p></html>");
+        JLabel label1 = new JLabel("<html><p style='text-align:center;'>Number One ( Bleach )  <p> Shiro Sagisu (Topic) </p>.</p></html>");
+        JLabel label2 = new JLabel("<html><p style='text-align:center;'>Go and Die (Topic) </p></html>");
+        JLabel label3 = new JLabel("<html><p style='text-align:center;'>Hasn't death called you? <p> Mishary Rasheed Al Afasy. </p></p></html>");
+        JLabel label4 = new JLabel("<html><p style='text-align:center;'>Hasn't death called you again? <p> Mishary Rasheed Al Afasy. </p></p></html>");
+        JLabel label5 = new JLabel("<html><p style='text-align:center;'>Hasn't death called you once again? <p> Mishary Rasheed Al Afasy. </p></p></html>");
         ImageIcon labelIcon = new ImageIcon("assets/music.png");
         ImageIcon labelIconImage = new ImageIcon(labelIcon.getImage().getScaledInstance(80, 50, Image.SCALE_SMOOTH));
         label1.setIcon(labelIconImage);
@@ -325,15 +330,110 @@ public class Jukebox implements MouseListener, ActionListener {
         label1.setVerticalAlignment(JLabel.CENTER);
         label1.setHorizontalTextPosition(JLabel.CENTER);
         label1.setVerticalTextPosition(JLabel.BOTTOM);
+        label1.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                playMusic("BurundiSound");
+                label1.setBackground(Color.decode("#e1fce2"));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+        label2.setIcon(labelIconImage);
+        label2.setFont(font_light.deriveFont(12f));
+        label2.setHorizontalAlignment(JLabel.CENTER);
+        label2.setVerticalAlignment(JLabel.CENTER);
+        label2.setHorizontalTextPosition(JLabel.CENTER);
+        label2.setVerticalTextPosition(JLabel.BOTTOM);
+
+        label2.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                playMusic("1");
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+        label3.setIcon(labelIconImage);
+        label3.setFont(font_light.deriveFont(12f));
+        label3.setHorizontalAlignment(JLabel.CENTER);
+        label3.setVerticalAlignment(JLabel.CENTER);
+        label3.setHorizontalTextPosition(JLabel.CENTER);
+        label3.setVerticalTextPosition(JLabel.BOTTOM);
+
+        label4.setIcon(labelIconImage);
+        label4.setFont(font_light.deriveFont(12f));
+        label4.setHorizontalAlignment(JLabel.CENTER);
+        label4.setVerticalAlignment(JLabel.CENTER);
+        label4.setHorizontalTextPosition(JLabel.CENTER);
+        label4.setVerticalTextPosition(JLabel.BOTTOM);
+
+        label5.setIcon(labelIconImage);
+        label5.setFont(font_light.deriveFont(12f));
+        label5.setHorizontalAlignment(JLabel.CENTER);
+        label5.setVerticalAlignment(JLabel.CENTER);
+        label5.setHorizontalTextPosition(JLabel.CENTER);
+        label5.setVerticalTextPosition(JLabel.BOTTOM);
+
 
         mainListAreaHome.setBackground(Color.white);
-        mainListAreaHome.add(mainListItem);
+        // mainListAreaHome.add(mainListItem);
 
-        mainListItem.add(label1, BorderLayout.CENTER);
-        mainListItem.setBackground(Color.decode("#fafafa"));
-        mainListItem.addMouseListener(this);
-        mainListItem.setPreferredSize(new Dimension(mainListItem.getWidth(), 150));
-        mainListItem.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainListAreaHome.add(label1, BorderLayout.CENTER);
+//        mainListAreaHome.setBackground(Color.decode("#fafafa"));
+//        mainListAreaHome.addMouseListener(this);
+//        mainListAreaHome.setPreferredSize(new Dimension("auto", 150));
+//        mainListAreaHome.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+////
+////
+        mainListAreaHome.add(label2, BorderLayout.CENTER);
+        mainListAreaHome.add(label3, BorderLayout.CENTER);
+        mainListAreaHome.add(label4, BorderLayout.CENTER);
+        mainListAreaHome.add(label5, BorderLayout.CENTER);
+//        mainListAreaHome.setBackground(Color.decode("#fafafa"));
+//        mainListAreaHome.addMouseListener(this);
+//        mainListAreaHome.setPreferredSize(new Dimension(mainListAreaHome.getWidth(), 150));
+//        mainListAreaHome.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
 
         JScrollPane mainListScrollAreaHome = new JScrollPane(mainListAreaHome);
         mainListScrollAreaHome.setBorder(null);
@@ -373,6 +473,46 @@ public class Jukebox implements MouseListener, ActionListener {
             } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
                 throw new RuntimeException(ex);
             }
+        }
+    }
+
+    public void playMusic(String musicTitle){
+        System.out.print("assets/songs/"+musicTitle+".wav");
+        File file = new File("assets/songs/"+musicTitle+".wav");
+        try {
+//            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+//            clip = AudioSystem.getClip();
+//            clip.open(audioStream);
+//            //@: Volume Control
+//            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+//            gainControl.setValue(-12.0f);
+//
+//            //@: Change UI to show that a song is playing
+//            mainListItem.setBackground(Color.decode("#e1fce2"));
+//
+//            //@: Start playing the audio
+//            clip.start();
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+            clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            //@: Volume Control
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-12.0f);
+
+            // Check if the clip is already running
+            if (clip.isRunning()) {
+                clip.stop();  // Stop the current playback
+//                clip.setFramePosition(0); // Reset the clip to the beginning
+//                clip.start(); // Start playing from the beginning
+            } else {
+                //@: Change UI to show that a song is playing
+//                mainListItem.setBackground(Color.decode("#e1fce2"));
+
+                //@: Start playing the audio (only if it wasn't already running)
+                clip.start();
+            }
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
