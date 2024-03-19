@@ -137,25 +137,6 @@ public class DbService {
         return songList;
     }
 
-//    public void createUser(UserData userData){
-//        Connection connection = null;
-//        try{
-//            connection = DriverManager.getConnection("jdbc:sqlite:jukebox.db");
-//            Statement statement = connection.createStatement();
-//            statement.setQueryTimeout(30);
-//
-//            ResultSet rs = statement.executeQuery("insert");
-//            while(rs.next()){
-//                System.out.println(rs.getString("name"));
-//            }
-//
-//        } catch(SQLException e) {
-//            // if the error message is "out of memory",
-//            // it probably means no database file is found
-//            System.err.println(e.getMessage());
-//        }
-//    }
-
     public boolean login(String email, String password){
         Connection connection = null;
 
@@ -239,7 +220,84 @@ public class DbService {
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
             return exception.getMessage();
+        }finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    // Handle closing errors
+                }
+            }
         }
         return username;
+    }
+
+    public boolean createPlaylist(String playlistID, String email, String[] songs){
+        Connection connection = null;
+        String songList = String.join(",", songs);
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:jukebox.db");
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+
+            PreparedStatement myStmt = connection.prepareStatement(
+                    "INSERT INTO PLAYLISTS (PLAYLIST_ID, SONG, EMAIL) VALUES (?, ?, ?)");
+            myStmt.setString(1, playlistID);
+            myStmt.setString(2, songList);
+            myStmt.setString(3, email);
+
+            int rowsAffected = myStmt.executeUpdate();
+
+            return rowsAffected == 1; // Indicates successful insertion
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false; // Indicate signup failure
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    // Handle closing errors
+                }
+            }
+        }
+    }
+
+    public String[] getPlaylist(String playlistID, String email){
+        Connection connection = null;
+        String songsList = null;
+
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:jukebox.db");
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+            PreparedStatement myStmt = connection.prepareStatement("SELECT SONG FROM PLAYLISTS WHERE EMAIL = ? AND PLAYLIST_ID = ?");
+            myStmt.setString(1, email);
+            myStmt.setString(2, playlistID);
+
+            ResultSet resultSet = myStmt.executeQuery();
+            while (resultSet.next()){
+                songsList = resultSet.getString("SONG");
+            }
+
+
+
+        } catch (SQLException exception) {
+            System.out.println(exception.getMessage());
+            return null;
+        }finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    // Handle closing errors
+                }
+            }
+        }
+        String[] arrayOfSongs = songsList.split(",");
+        return arrayOfSongs;
     }
 }

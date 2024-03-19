@@ -149,8 +149,8 @@ public class Jukebox implements MouseListener, ActionListener {
         JPanel mainContentAreaLibrary = getjPanelLIbrary();
 
         /*THIS IS THE END OF THE LIBRARY*/
-        
-        
+
+
         /*THE BEGINNING OF PLAYLIST*/
 
         //@: Main Content Area Section
@@ -287,6 +287,7 @@ public class Jukebox implements MouseListener, ActionListener {
         JPanel mainHeaderLibrary = new JPanel(new BorderLayout(0, 3));
         JLabel mainHeaderTitleLibrary = new JLabel("My Library.");
         JLabel mainHeaderSubtitleLibrary = new JLabel("Explore your library for a more personalized experience.");
+
 
         JPanel mainListArea = new JPanel(new GridLayout(0, 4, 10, 10));
 

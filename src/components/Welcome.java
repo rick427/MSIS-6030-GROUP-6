@@ -107,8 +107,8 @@ public class Welcome implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == startButton){
             frame.dispose();
-//            new Login();
-            new Jukebox();
+            new Login();
+//            new Jukebox();
 
         }
     }

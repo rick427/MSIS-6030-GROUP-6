@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.border.EmptyBorder;
+import java.util.Arrays;
+import java.util.List;
 
 public class Login implements ActionListener {
     JFrame frame;
@@ -114,6 +116,13 @@ public class Login implements ActionListener {
                 if (answer){
                     System.out.println("Worked");
                     User.username = dbService.getUsername(username.getText());
+                    User.email = username.getText();
+//                    String[] fruits = {"Apple", "Banana", "Orange", "Mango", "Pineapple", "Grapefruit",
+//                            "Watermelon", "Kiwi", "Strawberry", "Blueberry", "Blackberry",
+//                            "Cherry", "Peach", "Nectarine", "Plum", "Apricot", "Fig", "Date"};
+//                    boolean tester = dbService.createPlaylist("Test",User.email, fruits);
+//                    String[] tester = dbService.getPlaylist("ID1", User.email);
+//                    System.out.println(Arrays.toString(tester));
                     frame.dispose();
                     new Jukebox();
                 }

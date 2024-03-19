@@ -10,6 +10,16 @@ public class UserData {
         return username;
     }
 
+    @Override
+    public String toString() {
+        return "UserData{" +
+                "username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", phone_number='" + phone_number + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
