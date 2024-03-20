@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.sound.sampled.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class Jukebox implements MouseListener, ActionListener {
     JFrame frame;
@@ -289,9 +291,30 @@ public class Jukebox implements MouseListener, ActionListener {
         JLabel mainHeaderSubtitleLibrary = new JLabel("Explore your library for a more personalized experience.");
 
 
-        JPanel mainListArea = new JPanel(new GridLayout(0, 4, 10, 10));
+//        JPanel mainListArea = new JPanel(new GridLayout(0, 4, 10, 10));
 
-        JScrollPane mainListScrollArea = new JScrollPane(mainListArea);
+        DbService dbService = new DbService();
+
+        List<SongData> songDataList = dbService.getAllSongs();
+
+        DefaultListModel<String> model = getSongs(songDataList);
+        JList<String> jListArea = new JList<>(model);
+        jListArea.setFont(font_medium.deriveFont(20f));
+
+        jListArea.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) { // Ignore selection changes during adjustment
+                    int selectedIndex = jListArea.getSelectedIndex();
+                    if (selectedIndex != -1 && jListArea.getModel().getElementAt(selectedIndex).equals(songDataList.get(selectedIndex).getSongName())) {
+                        // User selected "Orange", perform an action
+                        System.out.println(songDataList.get(selectedIndex).getSongName() + " was selected!!");
+                    }
+                }
+            }
+        });
+
+        JScrollPane mainListScrollArea = new JScrollPane(jListArea);
         mainListScrollArea.setBorder(null);
         //scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -550,5 +573,15 @@ public class Jukebox implements MouseListener, ActionListener {
             frame.dispose();
             new Login();
         }
+    }
+
+    public DefaultListModel<String> getSongs(List<SongData> songDataList){
+        DefaultListModel<String> model = new DefaultListModel<>();
+
+        for(SongData item: songDataList){
+            model.addElement(item.getSongName());
+        }
+
+        return model;
     }
 }
