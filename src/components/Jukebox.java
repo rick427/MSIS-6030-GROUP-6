@@ -308,6 +308,7 @@ public class Jukebox implements MouseListener, ActionListener {
                     int selectedIndex = jListArea.getSelectedIndex();
                     if (selectedIndex != -1 && jListArea.getModel().getElementAt(selectedIndex).equals(songDataList.get(selectedIndex).getSongName())) {
                         // User selected "Orange", perform an action
+                        playMusic(songDataList.get(selectedIndex).getSongName());
                         System.out.println(songDataList.get(selectedIndex).getSongName() + " was selected!!");
                     }
                 }
@@ -486,7 +487,7 @@ public class Jukebox implements MouseListener, ActionListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         if(e.getSource() == mainListItem){
-            File file = new File("assets/songs/1.wav");
+            File file = new File("assets/songs/Number One (Bleach).wav");
             try {
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
                 clip = AudioSystem.getClip();
