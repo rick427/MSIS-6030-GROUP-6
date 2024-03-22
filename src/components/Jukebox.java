@@ -12,10 +12,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.sound.sampled.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Document;
 
 public class Jukebox implements MouseListener, ActionListener {
     JFrame frame;
@@ -24,6 +30,7 @@ public class Jukebox implements MouseListener, ActionListener {
     JPanel mainListItem;
     String primary_dark = "#141414";
     Font font_bold, font_medium, font_light, font_regular;
+    DefaultListModel<String> model = new DefaultListModel<>();
 
     Jukebox(){
         //@: Initial Setup
@@ -291,26 +298,33 @@ public class Jukebox implements MouseListener, ActionListener {
         JLabel mainHeaderSubtitleLibrary = new JLabel("Explore your library for a more personalized experience.");
 
 
+
+
 //        JPanel mainListArea = new JPanel(new GridLayout(0, 4, 10, 10));
 
         DbService dbService = new DbService();
+        List<String> songDataList = dbService.getAllSongs();
 
-        List<SongData> songDataList = dbService.getAllSongs();
-
-        DefaultListModel<String> model = getSongs(songDataList);
+        model = getSongs(songDataList);
         JList<String> jListArea = new JList<>(model);
-        jListArea.setFont(font_medium.deriveFont(20f));
+        jListArea.setFont(font_regular.deriveFont(14f));
+
 
         jListArea.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) { // Ignore selection changes during adjustment
-                    int selectedIndex = jListArea.getSelectedIndex();
-                    if (selectedIndex != -1 && jListArea.getModel().getElementAt(selectedIndex).equals(songDataList.get(selectedIndex).getSongName())) {
-                        // User selected "Orange", perform an action
-                        playMusic(songDataList.get(selectedIndex).getSongName());
-                        System.out.println(songDataList.get(selectedIndex).getSongName() + " was selected!!");
-                    }
+                    System.out.println("I am in JLIST 1");
+                    System.out.println(jListArea.getSelectedIndex());
+                    String selectedName = jListArea.getSelectedValue();
+                    System.out.println(selectedName);
+                    playMusic(selectedName);
+//                    int selectedIndex = jListArea.getSelectedIndex();
+//                    if (selectedIndex != -1 && jListArea.getModel().getElementAt(selectedIndex).equals(songDataList.get(selectedIndex))) {
+//                        // User selected "Orange", perform an action
+//                        playMusic(songDataList.get(selectedIndex));
+//                        System.out.println(songDataList.get(selectedIndex) + " was selected!!");
+//                    }
                 }
             }
         });
@@ -319,9 +333,90 @@ public class Jukebox implements MouseListener, ActionListener {
         mainListScrollArea.setBorder(null);
         //scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
+        //Search Bar functionality
+        JTextField searchBarField = new JTextField(20);
+        searchBarField.setSize(400, 60);
+
+//        searchBarField.listener
+        Document document = searchBarField.getDocument();
+        document.addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                handleSearchUpdate(); // Handle changes in the search bar
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                handleSearchUpdate(); // Handle changes in the search bar
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                // Not relevant for simple text changes
+            }
+
+            private void handleSearchUpdate() {
+                String searchText = searchBarField.getText();
+                // Perform actions based on the current search text
+                System.out.println("Search text changed: " + searchText);
+                String searchItem = searchBarField.getText();
+
+                List<String> result = songDataList.stream().filter(i -> i.contains(searchItem)).collect(Collectors.toList());
+                System.out.println(result);
+                model.clear();
+                for (String item : result) {
+                    model.addElement(item);
+                }
+
+                // No need to remove and re-add jListArea
+                frame.revalidate(); // Update the frame with the modified model
+                frame.repaint();
+            }
+        });
+        JButton searchButton = new JButton("Search");
+        searchButton.setFont(font_regular.deriveFont(14f));
+        searchButton.setBounds(125, 210, 350, 50);
+        searchButton.setFocusable(false);
+        searchButton.setOpaque(true);
+        searchButton.setBorderPainted(false);
+        searchButton.setForeground(Color.white);
+        searchButton.setBackground(Color.decode(primary_dark));
+        searchButton.setFont(font_medium.deriveFont(15f));
+
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchItem = searchBarField.getText();
+
+                List<String> result = songDataList.stream().filter(i -> i.contains(searchItem)).collect(Collectors.toList());
+                System.out.println(result);
+//                if(!result.isEmpty()){
+//                    model.clear();
+//                }
+//                for(String item: result){
+//                    mainListScrollArea.remove(jListArea);
+//                    model.addElement(item);
+//                    frame.invalidate();
+//                    frame.validate();
+//                    frame.repaint();
+//                }
+                // Update the existing model directly
+                model.clear();
+                for (String item : result) {
+                    model.addElement(item);
+                }
+
+                // No need to remove and re-add jListArea
+                frame.revalidate(); // Update the frame with the modified model
+                frame.repaint();
+            }
+        });
+
         mainHeaderLibrary.setBackground(Color.white);
         mainHeaderLibrary.add(mainHeaderTitleLibrary, BorderLayout.NORTH);
-        mainHeaderLibrary.add(mainHeaderSubtitleLibrary, BorderLayout.SOUTH);
+        mainHeaderLibrary.add(mainHeaderSubtitleLibrary, BorderLayout.WEST);
+        mainHeaderLibrary.add(searchBarField, BorderLayout.SOUTH);
+        mainHeaderLibrary.add(searchButton, BorderLayout.EAST);
 
         mainHeaderTitleLibrary.setFont(font_medium.deriveFont(20f));
         mainHeaderSubtitleLibrary.setFont(font_regular.deriveFont(14f));
@@ -335,7 +430,7 @@ public class Jukebox implements MouseListener, ActionListener {
 
     private JPanel getjPanelHome() {
         DbService dbService = new DbService();
-        List<SongData> songDataList = dbService.getAllSongs();
+        List<String> songDataList = dbService.getAllSongs();
         System.out.println(songDataList);
         System.out.println("Creating Home panel");
         JPanel mainContentAreaHome = new JPanel(new BorderLayout(0, 20));
@@ -508,6 +603,9 @@ public class Jukebox implements MouseListener, ActionListener {
     }
 
     public void playMusic(String musicTitle){
+        if(musicTitle == null){
+            return;
+        }
         System.out.print("assets/songs/"+musicTitle+".wav");
         File file = new File("assets/songs/"+musicTitle+".wav");
         try {
@@ -576,11 +674,11 @@ public class Jukebox implements MouseListener, ActionListener {
         }
     }
 
-    public DefaultListModel<String> getSongs(List<SongData> songDataList){
+    public DefaultListModel<String> getSongs(List<String> songDataList){
         DefaultListModel<String> model = new DefaultListModel<>();
 
-        for(SongData item: songDataList){
-            model.addElement(item.getSongName());
+        for(String item: songDataList){
+            model.addElement(item);
         }
 
         return model;

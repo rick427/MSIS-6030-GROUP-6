@@ -104,8 +104,8 @@ public class DbService {
 
     //Comment
 
-    public List<SongData> getAllSongs() {
-        List<SongData> songList = new ArrayList<>();
+    public List<String> getAllSongs() {
+        List<String> songList = new ArrayList<>();
         Connection connection = null;
         try{
             connection = DriverManager.getConnection("jdbc:sqlite:jukebox.db");
@@ -115,7 +115,8 @@ public class DbService {
             ResultSet rs = statement.executeQuery("select * from songs");
             while(rs.next()){
 //                System.out.println(rs.getString("name"));
-                SongData songData = new SongData(rs.getInt(songTable.getSONG_ID()), rs.getString(songTable.getSONG_NAME()), rs.getString(songTable.getSONG_ARTIST()), rs.getString(songTable.getSONG_RATING()), rs.getString(songTable.getSONG_PLAY_COUNT()));
+//                SongData songData = new SongData(rs.getInt(songTable.getSONG_ID()), rs.getString(songTable.getSONG_NAME()), rs.getString(songTable.getSONG_ARTIST()), rs.getString(songTable.getSONG_RATING()), rs.getString(songTable.getSONG_PLAY_COUNT()));
+                String songData = rs.getString(songTable.getSONG_NAME());
                 songList.add(songData);
             }
 
