@@ -38,3 +38,6 @@ This is intended to be the final product after several iterations i.e. v1 and v2
 - Sarah Muriithi
 
 ### Screenshots
+<img src="screenshots/1.png" alt="s1">
+<img src="screenshots/2.png" alt="s2">
+<img src="screenshots/3.png" alt="s3">
