@@ -23,7 +23,7 @@ This is intended to be the final product after several iterations i.e. v1 and v2
 ### How to Use
 - Download or clone this repository and extract the contents to your desktop.
 - Open the project using your IDE of choice. We heavily recommend **IntelliJ IDEA**
-- Download some sample music from the Google Drive link: https://drive.google.com/file/d/1MkR7A65ZuIYPXFAAI6bRaqJSQrDGtjFU/view?usp=sharing
+- Download some sample music from the Google Drive link: https://drive.google.com/file/d/1jw9OjZivAhTlxo4PWEDd3TTLaib-Kv1J/view?usp=drive_link
 - Extract and copy the contents of the sample music and paste them in the project's music directory:
 ```
  src/assets/music
