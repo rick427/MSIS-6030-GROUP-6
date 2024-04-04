@@ -130,7 +130,7 @@ public class Library implements ActionListener {
         search_btn = getButton("Search", LIGHT_GRAY_COLOR, DARK_COLOR);
         search_btn.setBounds(425, 10, 130, 40);
 
-        update_btn = getButton("Update Library", DARK_COLOR, FRAME_COLOR);
+        update_btn = getButton("Reset Search", DARK_COLOR, FRAME_COLOR);
         update_btn.setBounds(565, 10, 130, 40);
 
         actionsPanel.add(search_input);
@@ -201,13 +201,7 @@ public class Library implements ActionListener {
         else{
             Arrays.sort(files);
             for (String file : files){
-                JCheckBox song = new JCheckBox(file);
-                song.addItemListener(e -> {
-                   if(song.isSelected()){
-                       //@: Add song to selected array
-                       System.out.println(song.getText());
-                   }
-                });
+                JLabel song = new JLabel(file);
                 song.setFont(FONT_REGULAR.deriveFont(13f));
                 songList.add(song);
             }

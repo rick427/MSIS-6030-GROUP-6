@@ -17,19 +17,33 @@ This is intended to be the final product after several iterations i.e. v1 and v2
 
 ### Technology Stack
 - Java
-- JLayer, MP3Magic
+- JLayer, Mp3Magic, JAudioTagger
 - SQLITE DB
 
 ### How to Use
 - Download or clone this repository and extract the contents to your desktop.
 - Open the project using your IDE of choice. We heavily recommend **IntelliJ IDEA**
 - Download some sample music from the Google Drive link: https://drive.google.com/file/d/1MkR7A65ZuIYPXFAAI6bRaqJSQrDGtjFU/view?usp=sharing
-- Extract and copy the contents of the folder and paste them in the project's music directory:
+- Extract and copy the contents of the sample music and paste them in the project's music directory:
 ```
  src/assets/music
 ```
-- Link the JLayer libraries
-- This project leverages SQLITE so kindly download and setup according to their docs.
+- Download the following JAR files and follow the instructions below to add them to the project. (**NB: Skip this step if the lib and JAR files already exist**)
+```
+https://jar-download.com/artifacts/com.mpatric/mp3agic/0.9.0/source-code
+```
+```
+https://jar-download.com/artifacts/javazoom/jlayer/1.0.1/source-code
+```
+```
+https://jar-download.com/artifact-search/jaudiotagger
+```
+- Extract all JAR files into a directory in the root folder called **lib**
+- Add the JAR files to the **Project Structure** (CTRL+ALT+SHIFT+S in IntelliJ)
+- Click on **Modules**, then the **+** icon and select the **JARs or Directories**
+- Locate the lib folder within the project and select all 3 JAR files.
+- Click **OK** then **APPLY** then **OK**. And that's it!
+- Install SQLITE following the instruction from their site
 
 ### Team Members
 - Njoku Richard 

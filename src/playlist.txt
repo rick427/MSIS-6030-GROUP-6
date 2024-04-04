@@ -1,4 +1,5 @@
-src/assets/music/Angel Numbers  Ten Toes  - Chris Brown.mp3
+src/assets/music/ART - Tyla.mp3
+src/assets/music/Angel Numbers -   Amapiano Remix by PGO x Preecie.mp3
 src/assets/music/Apex Legends Tales From the Outlands ft. Loba - Stephen Barton.mp3
 src/assets/music/Mashbit - Stuck On You.mp3
 src/assets/music/Mumu - DJ Neptune & Joeboy.mp3
