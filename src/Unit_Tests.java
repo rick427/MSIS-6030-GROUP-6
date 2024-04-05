@@ -8,7 +8,7 @@ import services.DbService;
 
 import java.io.File;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Unit_Tests {
     DbService dbService = new DbService();
