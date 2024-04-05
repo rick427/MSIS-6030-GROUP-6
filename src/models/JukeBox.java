@@ -46,6 +46,7 @@ public class JukeBox extends PlaybackListener {
         this.home = home;
     }
 
+
     public void loadSong(Song song){
         currentSong = song;
         playlist = null;
@@ -260,7 +261,7 @@ public class JukeBox extends PlaybackListener {
                     currentTimeInMs++;
 
                     //@: Calculate to frames
-                    int calculatedFrame = (int) ((double) currentTimeInMs * 1.8 * currentSong.getFrameRatePerMs());
+                    int calculatedFrame = (int) ((double) currentTimeInMs * 1.65 * currentSong.getFrameRatePerMs());
 
                     //@: Update the GUI (i.e. Home)
                     home.setPlaybackSliderValue(calculatedFrame);

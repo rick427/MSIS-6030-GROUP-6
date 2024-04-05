@@ -3,6 +3,8 @@ package frames;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,15 +17,15 @@ import java.util.Arrays;
 public class Library implements ActionListener {
     private JFrame frame;
     private final JPanel rootPanel;
-    private JPanel songList;
-    private JButton home_btn, playlist_btn, search_btn,  update_btn;
+    private final DefaultListModel<String> model = new DefaultListModel<>();
+    private JButton home_btn;
+    private JButton playlist_btn;
     private Font FONT_MEDIUM, FONT_REGULAR;
     public static final Color DARK_COLOR = Color.decode("#141414");
     public static final Color FRAME_COLOR = Color.white;
     public static final Color LIGHT_GRAY_COLOR = Color.decode("#f1f1f1");
+    public static final Color LIGHT_GRAY_COLOR_2 = Color.decode("#F9F9F9");
     public static final Color INPUT_COLOR = Color.decode("#c9c9c9");
-
-    private ArrayList<String> selectedSongs = new ArrayList<>();
 
     Library(){
         //@: Load frame
@@ -57,6 +59,10 @@ public class Library implements ActionListener {
 
         //@: Load required custom fonts
         getFonts();
+
+        //@: Change the default font of the dialog
+        UIManager.put("OptionPane.messageFont", FONT_REGULAR.deriveFont(13f));
+        UIManager.put("OptionPane.buttonFont", FONT_REGULAR.deriveFont(14f));
     }
 
     private void loadHeaderComponents(){
@@ -83,8 +89,8 @@ public class Library implements ActionListener {
 
         JButton logout_btn = getButton("Logout", LIGHT_GRAY_COLOR, DARK_COLOR);
         logout_btn.addActionListener(e -> {
+            new SignIn();
             frame.dispose();
-            new Welcome();
         });
 
         rightColumn.add(logout_btn);
@@ -103,7 +109,7 @@ public class Library implements ActionListener {
         headerPanel.setBackground(FRAME_COLOR);
         headerPanel.setBorder(new EmptyBorder(0 , 0, 10, 0));
 
-        JLabel title = new JLabel("Liked Songs.");
+        JLabel title = new JLabel("Library.");
         title.setFont(FONT_MEDIUM.deriveFont(23f));
 
         JLabel userName = new JLabel("Kurosaki");
@@ -127,19 +133,68 @@ public class Library implements ActionListener {
                 )
         );
 
-        search_btn = getButton("Search", LIGHT_GRAY_COLOR, DARK_COLOR);
+        JButton search_btn = getButton("Search", LIGHT_GRAY_COLOR, DARK_COLOR);
         search_btn.setBounds(425, 10, 130, 40);
+        search_btn.addActionListener(e -> {
+            String searchText = search_input.getText();
+            if(searchText.isEmpty()){
+                JOptionPane.showMessageDialog(
+                       frame,
+                        "Search input cannot be empty.\nPlease check your input and try again.",
+                        "Missing Field(s)!",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+            else {
+                ArrayList<String> searchedFiles = new ArrayList<>();
+                for(String file : getSongs()){
+                    if(file.toLowerCase().contains(searchText.toLowerCase())){
+                        searchedFiles.add(file);
+                    }
+                }
+                if(searchedFiles.isEmpty()){
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "We could not find a match for your search query.\nPlease try a different search text.",
+                            "No Results!",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                }
+                else {
+                    model.removeAllElements();
+                    for(String file : searchedFiles){
+                        model.addElement(file);
+                    }
+                }
+            }
+        });
 
-        update_btn = getButton("Reset Search", DARK_COLOR, FRAME_COLOR);
-        update_btn.setBounds(565, 10, 130, 40);
+        JButton reset_btn = getButton("Clear Search", DARK_COLOR, FRAME_COLOR);
+        reset_btn.setBounds(565, 10, 130, 40);
+        reset_btn.addActionListener(e -> {
+            search_input.setText("");
+            model.removeAllElements();
+
+            for(String song : getSongs()){
+                model.addElement(song);
+            }
+        });
 
         actionsPanel.add(search_input);
         actionsPanel.add(search_btn);
-        actionsPanel.add(update_btn);
+        actionsPanel.add(reset_btn);
 
-        songList = new JPanel(new GridLayout(0, 1, 0, 0));
-        getSongs();
-        songList.setBackground(Color.decode("#f9f9f9"));
+        for(String song : getSongs()){
+            model.addElement(song);
+        }
+        JList<String> songList = new JList<>(model);
+        songList.setFixedCellHeight(32);
+        songList.setSelectionBackground(DARK_COLOR);
+        songList.setBorder(null);
+        songList.setBackground(LIGHT_GRAY_COLOR_2);
+        songList.setFont(FONT_REGULAR.deriveFont(13f));
+
+        songList.setBackground(LIGHT_GRAY_COLOR_2);
         songList.setBorder(new EmptyBorder(5, 10, 5, 10));
 
         JScrollPane songsListScrollPane = new JScrollPane(songList);
@@ -190,22 +245,18 @@ public class Library implements ActionListener {
         return button;
     }
 
-    private void getSongs(){
+    private String[] getSongs(){
         String musicDirectory = "src/assets/music/";
         File fileDirectory = new File(musicDirectory);
         String[] files = fileDirectory.list();
 
         if((files != null ? files.length : 0) == 0){
-            System.out.println("The directory is empty");
+            System.out.println("Files are empty");
         }
         else{
             Arrays.sort(files);
-            for (String file : files){
-                JLabel song = new JLabel(file);
-                song.setFont(FONT_REGULAR.deriveFont(13f));
-                songList.add(song);
-            }
         }
+        return files;
     }
 
     @Override
@@ -217,13 +268,6 @@ public class Library implements ActionListener {
         else if(e.getSource() == playlist_btn){
             new Playlist();
             frame.dispose();
-        }
-        else if(e.getSource() == search_btn){
-            System.out.println("Filter songs based on search text");
-        }
-        else if(e.getSource() == update_btn){
-            //@: get all selected songs and save to DB
-            System.out.println("Save library to the database!");
         }
     }
 }
