@@ -25,7 +25,7 @@ public class Library implements ActionListener {
 
     private ArrayList<String> selectedSongs = new ArrayList<>();
 
-    Library(){
+    public Library(){
         //@: Load frame
         loadFrame();
 
@@ -190,7 +190,7 @@ public class Library implements ActionListener {
         return button;
     }
 
-    private void getSongs(){
+    public boolean getSongs(){
         String musicDirectory = "src/assets/music/";
         File fileDirectory = new File(musicDirectory);
         String[] files = fileDirectory.list();
@@ -205,7 +205,9 @@ public class Library implements ActionListener {
                 song.setFont(FONT_REGULAR.deriveFont(13f));
                 songList.add(song);
             }
+            return true;
         }
+        return false;
     }
 
     @Override

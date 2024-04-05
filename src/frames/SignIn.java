@@ -1,5 +1,8 @@
 package frames;
 
+import services.DbService;
+import services.User;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -140,10 +143,14 @@ public class SignIn {
                         JOptionPane.ERROR_MESSAGE
                 );
             }
-            else{
+            else {
                 //@: DB Logic Here
-                frame.dispose();
-                new Home();
+                DbService dbService = new DbService();
+                if (dbService.login(username.getText(), new String(password.getPassword()))) {
+
+                    frame.dispose();
+                    new Home();
+                }
             }
         });
 
