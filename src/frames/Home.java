@@ -37,9 +37,9 @@ public class Home implements ActionListener, ListSelectionListener {
     public static final Color LIGHT_GRAY_COLOR = Color.decode("#f1f1f1");
     public static final Color LIGHT_GRAY_COLOR_2 = Color.decode("#f5f5f5");
     private final JukeBox jukeBox;
-
     //@: Store all song paths in a .txt file (used in creating a default playlist)
     private final ArrayList<String> songPaths = new ArrayList<>();
+    private static final String defaultPlaylistPath = "src/playlists/default.txt";
 
     public Home(){
         //@: Load frame
@@ -103,8 +103,8 @@ public class Home implements ActionListener, ListSelectionListener {
 
         JButton logout_btn = getButton("Logout", LIGHT_GRAY_COLOR, DARK_COLOR);
         logout_btn.addActionListener(e -> {
+            new SignIn();
             frame.dispose();
-            new Welcome();
         });
 
         rightColumn.add(logout_btn);
@@ -216,7 +216,7 @@ public class Home implements ActionListener, ListSelectionListener {
         loadPlaylist_btn.setBackground(LIGHT_GRAY_COLOR_2);
         loadPlaylist_btn.setBounds(350, 18, 100, 45);
         loadPlaylist_btn.addActionListener(e -> {
-            File defaultPlaylist = new File("src/playlist.txt");
+            File defaultPlaylist = new File(defaultPlaylistPath);
             jukeBox.loadPlaylist(defaultPlaylist);
             loadPlaylist_btn.setVisible(false);
             loadPlaylist_btn.setEnabled(false);
@@ -243,7 +243,7 @@ public class Home implements ActionListener, ListSelectionListener {
                 jukeBox.setCurrentFrame(frame);
 
                 //@: Update the current time in ms
-                jukeBox.setCurrentTimeInMs((int) (frame / (2.08 * jukeBox.getCurrentSong().getFrameRatePerMs())));
+                jukeBox.setCurrentTimeInMs((int) (frame / (1.65 * jukeBox.getCurrentSong().getFrameRatePerMs())));
 
                 //@: Resume the song
                 jukeBox.playCurrentSong();
@@ -371,7 +371,7 @@ public class Home implements ActionListener, ListSelectionListener {
 
     //@: Helper Methods
     private void createDefaultPlaylist(){
-        File selectedFile = new File("src/playlist.txt");
+        File selectedFile = new File(defaultPlaylistPath);
         try {
             //@: Write all song paths into the file
             FileWriter fileWriter = new FileWriter(selectedFile);

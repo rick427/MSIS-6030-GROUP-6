@@ -1,36 +1,47 @@
 package frames;
 
+import models.JukeBox;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-//import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.UUID;
 
-public class Playlist implements ActionListener {
+public class Playlist extends Home implements ActionListener, MouseListener {
     private JFrame frame;
     private final JPanel rootPanel;
-    private JPanel songList, controlsPanel;
+    private JPanel controlsPanel;
     private JSlider playbackSlider;
+    private JCheckBox[] songCheckBoxes;
+    private JPanel songList;
     private JButton home_btn, library_btn;
+    private final JukeBox jukeBox;
     private Font FONT_MEDIUM, FONT_REGULAR;
     public static final Color DARK_COLOR = Color.decode("#141414");
     public static final Color FRAME_COLOR = Color.white;
     public static final Color LIGHT_GRAY_COLOR = Color.decode("#f1f1f1");
     public static final Color LIGHT_GRAY_COLOR_2 = Color.decode("#f5f5f5");
     public static final Color PLAYLIST_COLOR = Color.decode("#f9f9f9");
-    //private final ArrayList<String> songPaths = new ArrayList<>();
+    private final ArrayList<String> songPaths = new ArrayList<>();
+    String musicDirPath = "src/assets/music/";
+    File fileDirectory = new File(musicDirPath);
+    String[] files = fileDirectory.list();
 
     Playlist(){
         //@: Load frame
         loadFrame();
+
+        jukeBox = new JukeBox(this);
 
         //@: Create parent panel to hold other panels and their respective components
         rootPanel = new JPanel(new BorderLayout());
@@ -87,8 +98,8 @@ public class Playlist implements ActionListener {
 
         JButton logout_btn = getButton("Logout", LIGHT_GRAY_COLOR, DARK_COLOR);
         logout_btn.addActionListener(e -> {
+            new SignIn();
             frame.dispose();
-            new Welcome();
         });
 
         rightColumn.add(logout_btn);
@@ -110,9 +121,52 @@ public class Playlist implements ActionListener {
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton save_playlist_btn = getButton("Add to Playlist", DARK_COLOR, FRAME_COLOR);
-        JButton reset_playlist_btn = getButton("Reset Playlist", LIGHT_GRAY_COLOR, DARK_COLOR);
         save_playlist_btn.setPreferredSize(new Dimension(130, 40));
+        save_playlist_btn.addActionListener(e -> {
+            if(songPaths.isEmpty()){
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Playlists cannot be null or empty.\nPlease select some songs to create a playlist.",
+                        "Missing Field(s)!",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+            else if(getPlaylists().length == 4){
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "You can only have 4 playlists per account.\nTo get more playlists purchase a Serenade\n subscription at $10.00/month.",
+                        "Playlist Limit Exceeded!",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                //@: Clear the checkboxes
+                for(int i=0; i<files.length; i++){
+                    songCheckBoxes[i].setSelected(false);
+                }
+            }
+            else{
+                //@: Create a new playlist based on user choice
+                createPlaylist();
+
+                //@: Clear the checkboxes
+                for(int i=0; i<files.length; i++){
+                    songCheckBoxes[i].setSelected(false);
+                }
+                //@: Show a success message
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Congratulations! You just added a new Serenade to your list.\nGet started by taking your Serenade for spin.",
+                        "Success!",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        });
+
+
+        JButton reset_playlist_btn = getButton("Delete Playlists", LIGHT_GRAY_COLOR, DARK_COLOR);
         reset_playlist_btn.setPreferredSize(new Dimension(130, 40));
+        reset_playlist_btn.addActionListener(e -> {
+            deletePlaylists();
+        });
 
         buttonsPanel.setBackground(FRAME_COLOR);
         buttonsPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
@@ -120,6 +174,7 @@ public class Playlist implements ActionListener {
         buttonsPanel.add(reset_playlist_btn);
 
         groupPanel.setBackground(FRAME_COLOR);
+        groupPanel.setBorder(new EmptyBorder(0, 0, 15, 0));
         groupPanel.add(title, BorderLayout.WEST);
         groupPanel.add(buttonsPanel, BorderLayout.EAST);
 
@@ -127,14 +182,16 @@ public class Playlist implements ActionListener {
         playlistPanel.setBackground(FRAME_COLOR);
         playlistPanel.setBorder(new EmptyBorder(0, 0, 15, 0));
 
-        for(int i=1; i<= 4; i++){
+        for(int i=0; i< getPlaylists().length; i++){
             JPanel playlistItem = new JPanel(new BorderLayout());
             playlistItem.setBackground(PLAYLIST_COLOR);
-            playlistItem.setPreferredSize(new Dimension(100, 60));
+            playlistItem.setPreferredSize(new Dimension(100, 50));
+            playlistItem.addMouseListener(this);
 
-            JLabel playlistItemText = new JLabel("Playlist "+ i);
+            String name = getPlaylists()[i].getName().toLowerCase().contains("default") ? "Default-" : "Playlist-";
+            JLabel playlistItemText = new JLabel(name + (i+1));
             ImageIcon icon = getImage("src/assets/images/brand.png");
-            ImageIcon brandIcon = new ImageIcon(icon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
+            ImageIcon brandIcon = new ImageIcon(icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
             playlistItemText.setIcon(brandIcon);
             playlistItemText.setIconTextGap(16);
             playlistItemText.setForeground(DARK_COLOR);
@@ -178,7 +235,7 @@ public class Playlist implements ActionListener {
         prev_btn.setBounds(240, 18, 100, 45);
         prev_btn.addActionListener(e -> {
             //@: Go to the previous song
-
+            jukeBox.previousSong();
         });
 
         JButton play_btn = new JButton(getImage("src/assets/images/play.png"));
@@ -191,10 +248,10 @@ public class Playlist implements ActionListener {
         play_btn.setBounds(350, 18, 100, 45);
         play_btn.addActionListener(e -> {
             //@: Toggle play and pause buttons
-            //togglePauseButton();
+            togglePauseButton();
 
             //@: Play the song
-            //jukeBox.playCurrentSong();
+            jukeBox.playCurrentSong();
         });
 
         JButton pause_btn = new JButton(getImage("src/assets/images/pause.png"));
@@ -207,10 +264,10 @@ public class Playlist implements ActionListener {
         pause_btn.setBounds(350, 18, 100, 45);
         pause_btn.addActionListener(e -> {
             //@: Toggle pause and play buttons
-            //togglePlayButton();
+            togglePlayButton();
 
             //@: Pause the song
-            //jukeBox.pauseSong();
+            jukeBox.pauseSong();
         });
 
         JButton next_btn = new JButton(getImage("src/assets/images/next.png"));
@@ -221,7 +278,7 @@ public class Playlist implements ActionListener {
         next_btn.setBounds(460, 18, 100, 45);
         next_btn.addActionListener(e -> {
             //@: Go to the next song
-            //jukeBox.nextSong();
+            jukeBox.nextSong();
         });
 
         JButton loadPlaylist_btn = new JButton(getImage("src/assets/images/play.png"));
@@ -231,8 +288,8 @@ public class Playlist implements ActionListener {
         loadPlaylist_btn.setBackground(LIGHT_GRAY_COLOR_2);
         loadPlaylist_btn.setBounds(350, 18, 100, 45);
         loadPlaylist_btn.addActionListener(e -> {
-            //File defaultPlaylist = new File("src/playlist.txt");
-            //jukeBox.loadPlaylist(defaultPlaylist);
+            File defaultPlaylist = new File("src/playlists/default.txt");
+            jukeBox.loadPlaylist(defaultPlaylist);
             loadPlaylist_btn.setVisible(false);
             loadPlaylist_btn.setEnabled(false);
         });
@@ -243,28 +300,28 @@ public class Playlist implements ActionListener {
             @Override
             public void mousePressed(MouseEvent e) {
                 //@: Pause the song when the user is holding the tick
-                //jukeBox.pauseSong();
+                jukeBox.pauseSong();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 //@: When the user releases the tick
-                //JSlider source = (JSlider) e.getSource();
+                JSlider source = (JSlider) e.getSource();
 
                 //@: Get the frame value from where the user wants to playback to
-                //int frame = source.getValue();
+                int frame = source.getValue();
 
                 //@: Update the current frame in the jukebox to this frame
-                //jukeBox.setCurrentFrame(frame);
+                jukeBox.setCurrentFrame(frame);
 
                 //@: Update the current time in ms
-                //jukeBox.setCurrentTimeInMs((int) (frame / (2.08 * jukeBox.getCurrentSong().getFrameRatePerMs())));
+                jukeBox.setCurrentTimeInMs((int) (frame / (2.08 * jukeBox.getCurrentSong().getFrameRatePerMs())));
 
                 //@: Resume the song
-                //jukeBox.playCurrentSong();
+                jukeBox.playCurrentSong();
 
                 //@: Toggle the pause and play buttons
-                //togglePauseButton();
+                togglePauseButton();
             }
         });
         playbackSlider.setBackground(null);
@@ -319,27 +376,90 @@ public class Playlist implements ActionListener {
     }
 
     private void getSongs(){
-        String musicDirectory = "src/assets/music/";
-        File fileDirectory = new File(musicDirectory);
-        String[] files = fileDirectory.list();
-
         if((files != null ? files.length : 0) == 0){
             System.out.println("The directory is empty");
         }
         else{
             Arrays.sort(files);
-            for (String file : files){
-                JCheckBox song = new JCheckBox(file);
-                song.addItemListener(e -> {
-                    if(song.isSelected()){
-                        //@: Add song to selected array
-                        System.out.println(song.getText());
+            songCheckBoxes = new JCheckBox[files.length];
+
+            for(int i=0; i< songCheckBoxes.length; i++){
+                songCheckBoxes[i] = new JCheckBox(files[i]);
+                songCheckBoxes[i].setFont(FONT_REGULAR.deriveFont(13f));
+                int tempIndex = i;
+                songCheckBoxes[i].addActionListener(e -> {
+                    if(songCheckBoxes[tempIndex].isSelected()){
+                        songPaths.add(musicDirPath + files[tempIndex]);
+                    }
+                    else {
+                        songPaths.remove(musicDirPath + files[tempIndex]);
                     }
                 });
-                song.setFont(FONT_REGULAR.deriveFont(13f));
-                songList.add(song);
+                songList.add(songCheckBoxes[i]);
             }
         }
+    }
+
+    private void createPlaylist(){
+        String id = "playlist-"+ UUID.randomUUID() +".txt";
+        File selectedFile = new File("src/playlists/"+id);
+        try {
+            if(!selectedFile.exists()){
+                boolean res = selectedFile.createNewFile();
+                System.out.println(res);
+            }
+
+            //@: Write all song paths into the file
+            FileWriter fileWriter = new FileWriter(selectedFile);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            //@: Sort the list in ascending order
+            Collections.sort(songPaths);
+
+            //@: Loop through the songs path list and write each song to the file
+            for(String songPath : songPaths){
+                bufferedWriter.write(songPath + "\n");
+            }
+            bufferedWriter.close();
+
+            //@: Display alert dialog if necessary
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private File[] getPlaylists(){
+        File playlistFolder = new File("src/playlists");
+        return playlistFolder.listFiles();
+    }
+
+    private void deletePlaylists(){
+        File playlistFolder = new File("src/playlists");
+        File[] files = playlistFolder.listFiles();
+        if(files == null) return;
+        else if(files.length == 1){
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "You cannot delete a system defined playlist.\nConsider getting a subscription to better enjoy the\nSerenade experience.",
+                    "Invalid Operation!",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        for(File file : files){
+            String fileName = file.getName();
+            if(!fileName.contains("default")){
+                boolean res = file.delete();
+                System.out.println(res);
+            }
+        }
+        JOptionPane.showMessageDialog(
+                frame,
+                "Your playlists have been deleted successfully.\nConsider getting a subscription to better enjoy the\nSerenade experience.",
+                "Playlists Deleted!",
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
     @Override
@@ -353,4 +473,49 @@ public class Playlist implements ActionListener {
             frame.dispose();
         }
     }
+
+    public void togglePauseButton(){
+        //@: get a ref to play and pause buttons
+        JButton playButton = (JButton) controlsPanel.getComponent(0);
+        JButton pauseButton = (JButton) controlsPanel.getComponent(1);
+
+        //@: disable play button
+        playButton.setVisible(false);
+        playButton.setEnabled(false);
+
+        //@: enable pause button
+        pauseButton.setVisible(true);
+        pauseButton.setEnabled(true);
+    }
+
+    public void togglePlayButton(){
+        //@: get a ref to play and pause buttons
+        JButton playButton = (JButton) controlsPanel.getComponent(0);
+        JButton pauseButton = (JButton) controlsPanel.getComponent(1);
+
+        //@: enable play button
+        playButton.setVisible(true);
+        playButton.setEnabled(true);
+
+        //@: disable pause button
+        pauseButton.setVisible(false);
+        pauseButton.setEnabled(false);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        //@: Load the clicked playlist
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
 }

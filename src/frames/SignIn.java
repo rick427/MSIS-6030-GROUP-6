@@ -81,7 +81,7 @@ public class SignIn {
         JPanel form = new JPanel(null);
 
         JTextField username = new JTextField("Email Address");
-        JPasswordField password = new JPasswordField("");
+        JPasswordField password = new JPasswordField("Enter a password");
 
         JButton login_btn = getButton("Login", DARK_COLOR, FRAME_COLOR);
         JButton register_btn = getButton("Don't have an account?", LIGHT_GRAY_COLOR, DARK_COLOR);

@@ -3,9 +3,13 @@ package frames;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,17 +19,18 @@ import java.util.Arrays;
 public class Library implements ActionListener {
     private JFrame frame;
     private final JPanel rootPanel;
-    private JPanel songList;
-    private JButton home_btn, playlist_btn, search_btn,  update_btn;
+    private final DefaultListModel<String> model = new DefaultListModel<>();
+    private JButton home_btn;
+    private JList<String> songList;
+    private JButton playlist_btn;
     private Font FONT_MEDIUM, FONT_REGULAR;
     public static final Color DARK_COLOR = Color.decode("#141414");
     public static final Color FRAME_COLOR = Color.white;
     public static final Color LIGHT_GRAY_COLOR = Color.decode("#f1f1f1");
+    public static final Color LIGHT_GRAY_COLOR_2 = Color.decode("#F9F9F9");
     public static final Color INPUT_COLOR = Color.decode("#c9c9c9");
 
-    private ArrayList<String> selectedSongs = new ArrayList<>();
-
-    public Library(){
+    Library(){
         //@: Load frame
         loadFrame();
 
@@ -57,6 +62,10 @@ public class Library implements ActionListener {
 
         //@: Load required custom fonts
         getFonts();
+
+        //@: Change the default font of the dialog
+        UIManager.put("OptionPane.messageFont", FONT_REGULAR.deriveFont(13f));
+        UIManager.put("OptionPane.buttonFont", FONT_REGULAR.deriveFont(14f));
     }
 
     private void loadHeaderComponents(){
@@ -83,8 +92,8 @@ public class Library implements ActionListener {
 
         JButton logout_btn = getButton("Logout", LIGHT_GRAY_COLOR, DARK_COLOR);
         logout_btn.addActionListener(e -> {
+            new SignIn();
             frame.dispose();
-            new Welcome();
         });
 
         rightColumn.add(logout_btn);
@@ -103,7 +112,7 @@ public class Library implements ActionListener {
         headerPanel.setBackground(FRAME_COLOR);
         headerPanel.setBorder(new EmptyBorder(0 , 0, 10, 0));
 
-        JLabel title = new JLabel("Liked Songs.");
+        JLabel title = new JLabel("Library.");
         title.setFont(FONT_MEDIUM.deriveFont(23f));
 
         JLabel userName = new JLabel("Kurosaki");
@@ -116,7 +125,7 @@ public class Library implements ActionListener {
         actionsPanel.setPreferredSize(new Dimension(frame.getWidth(), 80));
 
         JTextField search_input = new JTextField("");
-        search_input.setBounds(0, 10, frame.getWidth() - 385, 40);
+        search_input.setBounds(0, 10, frame.getWidth() - 245, 40);
         search_input.setFont(FONT_REGULAR.deriveFont(15f));
         search_input.setForeground(DARK_COLOR);
         search_input.setBackground(FRAME_COLOR);
@@ -126,20 +135,123 @@ public class Library implements ActionListener {
                         BorderFactory.createEmptyBorder(5, 10, 5, 10)
                 )
         );
+        search_input.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                String searchText = search_input.getText();
+                if(searchText.isEmpty()) return;
 
-        search_btn = getButton("Search", LIGHT_GRAY_COLOR, DARK_COLOR);
-        search_btn.setBounds(425, 10, 130, 40);
+                ArrayList<String> searchedFiles = new ArrayList<>();
+                for(String file : getSongs()){
+                    if(file.toLowerCase().contains(searchText.toLowerCase())){
+                        searchedFiles.add(file);
+                    }
+                }
+                if(searchedFiles.isEmpty()){
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "We could not find a match for your search query.\nPlease try a different search text.",
+                            "No Results!",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                }
+                else {
+                    model.removeAllElements();
+                    for(String file : searchedFiles){
+                        model.addElement(file);
+                    }
+                }
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                if(search_input.getText().isEmpty()){
+                    search_input.setText("");
+                    model.removeAllElements();
 
-        update_btn = getButton("Reset Search", DARK_COLOR, FRAME_COLOR);
-        update_btn.setBounds(565, 10, 130, 40);
+                    for(String song : getSongs()){
+                        model.addElement(song);
+                    }
+                }
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {}
+        });
+
+        JTextField rating_input = new JTextField("");
+        rating_input.setFont(FONT_REGULAR.deriveFont(15f));
+        rating_input.setForeground(DARK_COLOR);
+        rating_input.setVisible(false);
+        rating_input.setBackground(FRAME_COLOR);
+        rating_input.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(INPUT_COLOR),
+                        BorderFactory.createEmptyBorder(5, 10, 5, 10)
+                )
+        );
+        rating_input.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if(rating_input.getText().equals("Enter a rating")){
+                    rating_input.setText("");
+                    rating_input.setForeground(DARK_COLOR);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(rating_input.getText().isEmpty()){
+                    rating_input.setForeground(Color.lightGray);
+                    rating_input.setText("Enter a rating");
+                }
+            }
+        });
+
+        JButton update_btn = getButton("Update Library", DARK_COLOR, FRAME_COLOR);
+        update_btn.setBounds(570, 10, 130, 40);
+        update_btn.addActionListener(e -> {
+            if(songList.getSelectedValue() == null){
+                JOptionPane.showMessageDialog(
+                       frame,
+                        "A song needs to be selected.\nPlease select a song and try again.",
+                        "Missing Field(s)!",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+            if(rating_input.getText().isEmpty()){
+                rating_input.setVisible(true);
+                search_input.setBounds(0, 10, 260, 40);
+                rating_input.setBounds(280, 10, 260, 40);
+            }
+            else {
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Congratulations! Your song - \n" + songList.getSelectedValue() + "\nhas been updated with a new rating",
+                        "Updated Song",
+                        JOptionPane.PLAIN_MESSAGE
+                );
+                songList.clearSelection();
+                rating_input.setVisible(false);
+                rating_input.setText("");
+                search_input.setBounds(0, 10, frame.getWidth() - 245, 40);
+            }
+        });
 
         actionsPanel.add(search_input);
-        actionsPanel.add(search_btn);
+        actionsPanel.add(rating_input);
         actionsPanel.add(update_btn);
 
-        songList = new JPanel(new GridLayout(0, 1, 0, 0));
-        getSongs();
-        songList.setBackground(Color.decode("#f9f9f9"));
+        for(String song : getSongs()){
+            model.addElement(song);
+        }
+        songList = new JList<>(model);
+        songList.setFixedCellHeight(32);
+        songList.setSelectionBackground(DARK_COLOR);
+        songList.setBorder(null);
+        songList.setBackground(LIGHT_GRAY_COLOR_2);
+        songList.setFont(FONT_REGULAR.deriveFont(13f));
+
+        songList.setBackground(LIGHT_GRAY_COLOR_2);
         songList.setBorder(new EmptyBorder(5, 10, 5, 10));
 
         JScrollPane songsListScrollPane = new JScrollPane(songList);
@@ -190,24 +302,18 @@ public class Library implements ActionListener {
         return button;
     }
 
-    public boolean getSongs(){
+    private String[] getSongs(){
         String musicDirectory = "src/assets/music/";
         File fileDirectory = new File(musicDirectory);
         String[] files = fileDirectory.list();
 
         if((files != null ? files.length : 0) == 0){
-            System.out.println("The directory is empty");
+            System.out.println("Files are empty");
         }
         else{
             Arrays.sort(files);
-            for (String file : files){
-                JLabel song = new JLabel(file);
-                song.setFont(FONT_REGULAR.deriveFont(13f));
-                songList.add(song);
-            }
-            return true;
         }
-        return false;
+        return files;
     }
 
     @Override
@@ -219,13 +325,6 @@ public class Library implements ActionListener {
         else if(e.getSource() == playlist_btn){
             new Playlist();
             frame.dispose();
-        }
-        else if(e.getSource() == search_btn){
-            System.out.println("Filter songs based on search text");
-        }
-        else if(e.getSource() == update_btn){
-            //@: get all selected songs and save to DB
-            System.out.println("Save library to the database!");
         }
     }
 }
