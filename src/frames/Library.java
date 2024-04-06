@@ -8,6 +8,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +21,7 @@ public class Library implements ActionListener {
     private final JPanel rootPanel;
     private final DefaultListModel<String> model = new DefaultListModel<>();
     private JButton home_btn;
+    private JList<String> songList;
     private JButton playlist_btn;
     private Font FONT_MEDIUM, FONT_REGULAR;
     public static final Color DARK_COLOR = Color.decode("#141414");
@@ -122,7 +125,7 @@ public class Library implements ActionListener {
         actionsPanel.setPreferredSize(new Dimension(frame.getWidth(), 80));
 
         JTextField search_input = new JTextField("");
-        search_input.setBounds(0, 10, frame.getWidth() - 385, 40);
+        search_input.setBounds(0, 10, frame.getWidth() - 245, 40);
         search_input.setFont(FONT_REGULAR.deriveFont(15f));
         search_input.setForeground(DARK_COLOR);
         search_input.setBackground(FRAME_COLOR);
@@ -132,20 +135,12 @@ public class Library implements ActionListener {
                         BorderFactory.createEmptyBorder(5, 10, 5, 10)
                 )
         );
+        search_input.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                String searchText = search_input.getText();
+                if(searchText.isEmpty()) return;
 
-        JButton search_btn = getButton("Search", LIGHT_GRAY_COLOR, DARK_COLOR);
-        search_btn.setBounds(425, 10, 130, 40);
-        search_btn.addActionListener(e -> {
-            String searchText = search_input.getText();
-            if(searchText.isEmpty()){
-                JOptionPane.showMessageDialog(
-                       frame,
-                        "Search input cannot be empty.\nPlease check your input and try again.",
-                        "Missing Field(s)!",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
-            else {
                 ArrayList<String> searchedFiles = new ArrayList<>();
                 for(String file : getSongs()){
                     if(file.toLowerCase().contains(searchText.toLowerCase())){
@@ -167,27 +162,89 @@ public class Library implements ActionListener {
                     }
                 }
             }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                if(search_input.getText().isEmpty()){
+                    search_input.setText("");
+                    model.removeAllElements();
+
+                    for(String song : getSongs()){
+                        model.addElement(song);
+                    }
+                }
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {}
         });
 
-        JButton reset_btn = getButton("Clear Search", DARK_COLOR, FRAME_COLOR);
-        reset_btn.setBounds(565, 10, 130, 40);
-        reset_btn.addActionListener(e -> {
-            search_input.setText("");
-            model.removeAllElements();
+        JTextField rating_input = new JTextField("");
+        rating_input.setFont(FONT_REGULAR.deriveFont(15f));
+        rating_input.setForeground(DARK_COLOR);
+        rating_input.setVisible(false);
+        rating_input.setBackground(FRAME_COLOR);
+        rating_input.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(INPUT_COLOR),
+                        BorderFactory.createEmptyBorder(5, 10, 5, 10)
+                )
+        );
+        rating_input.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if(rating_input.getText().equals("Enter a rating")){
+                    rating_input.setText("");
+                    rating_input.setForeground(DARK_COLOR);
+                }
+            }
 
-            for(String song : getSongs()){
-                model.addElement(song);
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(rating_input.getText().isEmpty()){
+                    rating_input.setForeground(Color.lightGray);
+                    rating_input.setText("Enter a rating");
+                }
+            }
+        });
+
+        JButton update_btn = getButton("Update Library", DARK_COLOR, FRAME_COLOR);
+        update_btn.setBounds(570, 10, 130, 40);
+        update_btn.addActionListener(e -> {
+            if(songList.getSelectedValue() == null){
+                JOptionPane.showMessageDialog(
+                       frame,
+                        "A song needs to be selected.\nPlease select a song and try again.",
+                        "Missing Field(s)!",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+            if(rating_input.getText().isEmpty()){
+                rating_input.setVisible(true);
+                search_input.setBounds(0, 10, 260, 40);
+                rating_input.setBounds(280, 10, 260, 40);
+            }
+            else {
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Congratulations! Your song - \n" + songList.getSelectedValue() + "\nhas been updated with a new rating",
+                        "Updated Song",
+                        JOptionPane.PLAIN_MESSAGE
+                );
+                songList.clearSelection();
+                rating_input.setVisible(false);
+                rating_input.setText("");
+                search_input.setBounds(0, 10, frame.getWidth() - 245, 40);
             }
         });
 
         actionsPanel.add(search_input);
-        actionsPanel.add(search_btn);
-        actionsPanel.add(reset_btn);
+        actionsPanel.add(rating_input);
+        actionsPanel.add(update_btn);
 
         for(String song : getSongs()){
             model.addElement(song);
         }
-        JList<String> songList = new JList<>(model);
+        songList = new JList<>(model);
         songList.setFixedCellHeight(32);
         songList.setSelectionBackground(DARK_COLOR);
         songList.setBorder(null);

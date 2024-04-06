@@ -7,11 +7,6 @@ public class App {
         //@: We wrap our app in a "invokeLater" method to ensure our GUI
         //@: is executed on the Event Dispatch Thread which helps deal with potential threading issues
         //@: whenever the GUI is updated
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Welcome();
-            }
-        });
+        SwingUtilities.invokeLater(Welcome::new);
     }
 }
