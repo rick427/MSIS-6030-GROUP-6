@@ -30,7 +30,7 @@ public class Library implements ActionListener {
     public static final Color LIGHT_GRAY_COLOR_2 = Color.decode("#F9F9F9");
     public static final Color INPUT_COLOR = Color.decode("#c9c9c9");
 
-    Library(){
+    public Library(){
         //@: Load frame
         loadFrame();
 
@@ -302,7 +302,7 @@ public class Library implements ActionListener {
         return button;
     }
 
-    private String[] getSongs(){
+    public String[] getSongs(){
         String musicDirectory = "src/assets/music/";
         File fileDirectory = new File(musicDirectory);
         String[] files = fileDirectory.list();

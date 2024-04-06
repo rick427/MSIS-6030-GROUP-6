@@ -1,7 +1,6 @@
 package frames;
 
-import services.DbService;
-import services.User;
+import services.Database;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -145,8 +144,8 @@ public class SignIn {
             }
             else {
                 //@: DB Logic Here
-                DbService dbService = new DbService();
-                if (dbService.login(username.getText(), new String(password.getPassword()))) {
+                Database database = new Database();
+                if (database.login(username.getText(), new String(password.getPassword()))) {
 
                     frame.dispose();
                     new Home();

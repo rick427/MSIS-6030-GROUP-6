@@ -1,7 +1,5 @@
 package frames;
 
-import services.DbService;
-
 import javax.swing.*;
 
 public class App {

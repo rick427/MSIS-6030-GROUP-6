@@ -1,7 +1,7 @@
 package frames;
 
-import DBModels.UserData;
-import services.DbService;
+import models.Users;
+import services.Database;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -203,16 +203,16 @@ public class SignUp {
             }
             else{
                 //@: DB Logic Here
-                DbService dbService = new DbService();
+                Database database = new Database();
 
-                UserData userData = new UserData();
+                Users users = new Users();
 
-                userData.setEmail(username.getText());
-                userData.setPassword(String.valueOf(password.getPassword()));
-                userData.setUsername(fullName.getText());
-                userData.setPhone_number(phoneNumber.getText());
+                users.setEmail(username.getText());
+                users.setPassword(String.valueOf(password.getPassword()));
+                users.setUsername(fullName.getText());
+                users.setPhone_number(phoneNumber.getText());
 
-                if(dbService.signup(userData)) {
+                if(database.signup(users)) {
                     frame.dispose();
                     new SignIn();
                 }

@@ -1,6 +1,6 @@
-package DBModels;
+package models;
 
-public class UserData {
+public class Users {
     private String username;
     private String email;
     private String phone_number;

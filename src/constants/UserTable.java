@@ -1,4 +1,4 @@
-package TableStructure;
+package constants;
 
 public class UserTable {
     private final String  EMAIL = "EMAIL";

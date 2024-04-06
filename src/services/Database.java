@@ -1,12 +1,12 @@
 package services;
 
-import DBModels.UserData;
-import TableStructure.UserTable;
+import models.Users;
+import constants.UserTable;
 
 import java.sql.*;
 
-public class DbService {
-    public DbService() {
+public class Database {
+    public Database() {
     }
     UserTable userTable = new UserTable();
 
@@ -67,7 +67,7 @@ public class DbService {
         return rowCount != 0;
     }
 
-    public boolean signup(UserData userData) {
+    public boolean signup(Users users) {
         Connection connection = null;
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:jukebox.db");
@@ -79,11 +79,11 @@ public class DbService {
 
             PreparedStatement myStmt = connection.prepareStatement(
                     "INSERT INTO USERS (EMAIL, USERNAME, PHONE_NUMBER, PASSWORD) VALUES (?, ?, ?, ?)");
-            myStmt.setString(1, userData.getEmail());
+            myStmt.setString(1, users.getEmail());
 //            myStmt.setString(2, hashedPassword);
-            myStmt.setString(2, userData.getUsername());
-            myStmt.setString(3, userData.getPhone_number());
-            myStmt.setString(4, userData.getPassword());
+            myStmt.setString(2, users.getUsername());
+            myStmt.setString(3, users.getPhone_number());
+            myStmt.setString(4, users.getPassword());
 
             int rowsAffected = myStmt.executeUpdate();
 

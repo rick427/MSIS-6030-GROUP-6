@@ -1,6 +1,6 @@
 package frames;
 
-import services.DbService;
+import services.Database;
 
 import java.awt.*;
 import java.io.File;
@@ -101,8 +101,8 @@ public class Welcome implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == getStartedBtn){
-            DbService dbService = new DbService();
-            dbService.connect();
+            Database database = new Database();
+            database.connect();
             frame.dispose();
             new SignIn();
         }
